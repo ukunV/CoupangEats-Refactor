@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ES5",
+    "outDir": "./dist",
+    "moduleResolution": "Node",
+    "lib": ["ES2016"],
+    "noImplicitAny": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "strict": true,
+    // "strictFunctionTypes": false
+  },
+  "include": ["./src/**/*"]
+}
