@@ -1,15 +1,7 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const paymentProvider = require("../../app/Payment/paymentProvider");
-const paymentService = require("../../app/Payment/paymentService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
-
-const kakaoMap = require("../../../controllers/kakao_ctrl").getpaymentInfo;
+import * as paymentProvider from '../../app/Payment/paymentProvider';
+import * as paymentService from '../../app/Payment/paymentService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
 // 계좌/카드/현금 영수증 조회
 // 현금영수증 변경
@@ -19,7 +11,7 @@ const kakaoMap = require("../../../controllers/kakao_ctrl").getpaymentInfo;
  * API Name : 결제방식(카드) 등록 API
  * [POST] /payments/:type/credit-card
  */
-exports.createCard = async function (req, res) {
+export const createCard = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { type } = req.params;
@@ -51,29 +43,29 @@ exports.createCard = async function (req, res) {
     return res.send(errResponse(baseResponse.CARD_NUM_IS_NOT_VALID)); // 2047
 
   if (
-    (validMonth.length != 2) |
-    ((validMonth !== "01") &
-      (validMonth !== "02") &
-      (validMonth !== "03") &
-      (validMonth !== "04") &
-      (validMonth !== "05") &
-      (validMonth !== "06") &
-      (validMonth !== "07") &
-      (validMonth !== "08") &
-      (validMonth !== "09") &
-      (validMonth !== "10") &
-      (validMonth !== "11") &
-      (validMonth !== "12"))
+    validMonth.length != 2 ||
+    (validMonth !== '01' &&
+      validMonth !== '02' &&
+      validMonth !== '03' &&
+      validMonth !== '04' &&
+      validMonth !== '05' &&
+      validMonth !== '06' &&
+      validMonth !== '07' &&
+      validMonth !== '08' &&
+      validMonth !== '09' &&
+      validMonth !== '10' &&
+      validMonth !== '11' &&
+      validMonth !== '12')
   )
     return res.send(errResponse(baseResponse.VALID_MONTH_IS_NOT_VALID)); // 2048
 
   if (validYear.length != 2)
     return res.send(errResponse(baseResponse.VALID_YEAR_IS_NOT_VALID)); // 2049
 
-  const today = new Date();
+  const today: Date = new Date();
 
-  const year = today.getFullYear();
-  let month = today.getMonth() + 1;
+  const year: number = today.getFullYear();
+  let month: string = (today.getMonth() + 1).toString();
 
   if (month in [1, 2, 3, 4, 5, 6, 7, 8, 9]) month = `0${month}`;
   const now = `${year}` + `${month}`;
@@ -125,7 +117,7 @@ exports.createCard = async function (req, res) {
  * API Name : 결제방식(계좌) 등록 - 입금주명(유저명) 조회 API
  * [GET] /payments/account/user-name
  */
-exports.getUserNameAtAccount = async function (req, res) {
+export const getUserNameAtAccount = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -164,7 +156,7 @@ exports.getUserNameAtAccount = async function (req, res) {
  * [POST] /payments/:type/account
  * query string: bankId
  */
-exports.createAccount = async function (req, res) {
+export const createAccount = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { type } = req.params;
@@ -232,7 +224,7 @@ exports.createAccount = async function (req, res) {
  * API Name : 결제방식 삭제 API
  * [PATCH] /payments
  */
-exports.deletePayment = async function (req, res) {
+export const deletePayment = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { paymentId } = req.body;
@@ -288,7 +280,7 @@ exports.deletePayment = async function (req, res) {
  * API Name : 현금영수증 발급 정보 조회 API
  * [GET] /payments/cash-receipt
  */
-exports.getCashReceiptInfo = async function (req, res) {
+export const getCashReceiptInfo = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -326,7 +318,7 @@ exports.getCashReceiptInfo = async function (req, res) {
  * API Name : 현금영수증 발급 정보 변경 API
  * [PATCH] /payments/cash-receipt
  */
-exports.modifyCashReceiptMethod = async function (req, res) {
+export const modifyCashReceiptMethod = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { isGet, cashReceiptMethod, cashReceiptNum } = req.body;
@@ -385,7 +377,7 @@ exports.modifyCashReceiptMethod = async function (req, res) {
  * API Name : 결제 관리 페이지 조회 API
  * [GET] /payments/detail
  */
-exports.getPayment = async function (req, res) {
+export const getPayment = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -423,7 +415,7 @@ exports.getPayment = async function (req, res) {
  * API Name : 계좌 은행 목록 조회 API
  * [GET] /payments/account/bank-list
  */
-exports.getBankList = async function (req, res) {
+export const getBankList = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start

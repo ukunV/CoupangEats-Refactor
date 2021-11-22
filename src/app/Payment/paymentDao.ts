@@ -1,23 +1,23 @@
 // 유저 존재 여부 확인
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 결제방식(카드) 등록
-async function createCard(
-  connection,
-  userId,
-  number,
-  validMonth,
-  validYear,
-  cvc,
-  pwd
+export const createCard = async function (
+  connection: any,
+  userId: number,
+  number: string,
+  validMonth: string,
+  validYear: string,
+  cvc: string,
+  pwd: string
 ) {
   const query1 = `
                 update Payment
@@ -42,10 +42,13 @@ async function createCard(
   ]);
 
   return row2[0];
-}
+};
 
 // 결제방식(계좌) 등록 - 입금주명(유저명) 조회
-async function selectUserNameAtAccount(connection, userId) {
+export const selectUserNameAtAccount = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select name
                 from User
@@ -54,11 +57,11 @@ async function selectUserNameAtAccount(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return { userName: row[0][0]["name"] };
-}
+  return { userName: row[0][0]['name'] };
+};
 
 // 은행 존재 여부 check
-async function checkBankExist(connection, bankId) {
+export const checkBankExist = async function (connection: any, bankId: string) {
   const query = `
                 select exists(select id
                               from AccountBank
@@ -67,11 +70,15 @@ async function checkBankExist(connection, bankId) {
 
   const row = await connection.query(query, bankId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 은행의 계좌번호 길이 check
-async function checkAccountLength(connection, bankId, numLen) {
+export const checkAccountLength = async function (
+  connection: any,
+  bankId: string,
+  numLen: string
+) {
   const query = `
                 select exists(select id
                               from AccountBank
@@ -81,11 +88,16 @@ async function checkAccountLength(connection, bankId, numLen) {
 
   const row = await connection.query(query, [bankId, numLen]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 결제방식(계좌) 등록
-async function createAccount(connection, userId, bankId, number) {
+export const createAccount = async function (
+  connection: any,
+  userId: number,
+  bankId: string,
+  number: string
+) {
   const query1 = `
                 update Payment
                 set isChecked = 0
@@ -102,10 +114,13 @@ async function createAccount(connection, userId, bankId, number) {
   const row2 = await connection.query(query2, [userId, bankId, number]);
 
   return row2[0];
-}
+};
 
 // 결제방식 존재 여부 check
-async function checkPaymentExist(connection, paymentId) {
+export const checkPaymentExist = async function (
+  connection: any,
+  paymentId: string
+) {
   const query = `
                 select exists(select id
                               from Payment
@@ -115,11 +130,15 @@ async function checkPaymentExist(connection, paymentId) {
 
   const row = await connection.query(query, paymentId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 해당 유저의 결제방식이 맞는지 check
-async function checkPaymentHost(connection, userId, paymentId) {
+export const checkPaymentHost = async function (
+  connection: any,
+  userId: number,
+  paymentId: string
+) {
   const query = `
                 select exists(select id
                               from Payment
@@ -129,11 +148,14 @@ async function checkPaymentHost(connection, userId, paymentId) {
 
   const row = await connection.query(query, [paymentId, userId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 결제방식 삭제
-async function deletePayment(connection, paymentId) {
+export const deletePayment = async function (
+  connection: any,
+  paymentId: string
+) {
   const query = `
                 update Payment
                 set isDeleted = 0
@@ -143,10 +165,13 @@ async function deletePayment(connection, paymentId) {
   const row = await connection.query(query, paymentId);
 
   return row[0].info;
-}
+};
 
 // 현금영수증 발급 정보 조회
-async function selectCashReceiptInfo(connection, userId) {
+export const selectCashReceiptInfo = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select isGet,
                 case
@@ -166,15 +191,15 @@ async function selectCashReceiptInfo(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 현금영수증 발급 정보 변경
-async function modifyCashReceiptMethod(
-  connection,
-  userId,
-  isGet,
-  cashReceiptMethod,
-  cashReceiptNum
+export const modifyCashReceiptMethod = async function (
+  connection: any,
+  userId: number,
+  isGet: number,
+  cashReceiptMethod: number,
+  cashReceiptNum: string
 ) {
   const query = `
                 update User
@@ -190,10 +215,10 @@ async function modifyCashReceiptMethod(
   ]);
 
   return row[0].info;
-}
+};
 
 // 결제 관리 페이지 조회
-async function selectPayment(connection, userId) {
+export const selectPayment = async function (connection: any, userId: number) {
   const query1 = `
                   select id as paymentId, 
                         concat('****', left(right(number, 4),3), '*') as number,
@@ -227,10 +252,13 @@ async function selectPayment(connection, userId) {
   const row3 = await connection.query(query3, userId);
 
   return { card: row1[0], account: row2[0], cashReceipt: row3[0] };
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -240,11 +268,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -254,11 +285,11 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계좌 은행 목록 조회
-async function selectBankList(connection) {
+export const selectBankList = async function (connection: any) {
   const query = `
                 select id as bankId, bankName
                 from AccountBank;
@@ -267,22 +298,4 @@ async function selectBankList(connection) {
   const row = await connection.query(query);
 
   return row[0];
-}
-
-module.exports = {
-  checkUserExist,
-  createCard,
-  selectUserNameAtAccount,
-  checkBankExist,
-  checkAccountLength,
-  createAccount,
-  checkPaymentExist,
-  checkPaymentHost,
-  deletePayment,
-  selectCashReceiptInfo,
-  modifyCashReceiptMethod,
-  selectPayment,
-  checkUserBlocked,
-  checkUserWithdrawn,
-  selectBankList,
 };
