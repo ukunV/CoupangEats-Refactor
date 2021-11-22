@@ -1,5 +1,5 @@
 // 음식 카테고리 조회
-async function selectFoodCategory(connection) {
+export const selectFoodCategory = async function (connection: any) {
   const query = `
                 select id, categoryName, imageURL
                 from StoreCategory;
@@ -8,32 +8,39 @@ async function selectFoodCategory(connection) {
   const row = await connection.query(query);
 
   return row[0];
-}
+};
 
 // 유저 존재 여부 check
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 카테고리 존재 여부 check
-async function checkCategoryExist(connection, categoryId) {
+export const checkCategoryExist = async function (
+  connection: any,
+  categoryId: string
+) {
   const query = `
                 select exists(select id from StoreCategory where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, categoryId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 새로 들어왔어요 목록 조회 by userId
-async function selectNewStoreByUserId(connection, params) {
+export const selectNewStoreByUserId = async function (
+  connection: any,
+  userId: number,
+  categoryId: string
+) {
   const query = `
                 select s.id as storeId, s.storeName, smi.imageURL,
                       ifnull(rc.count, 0) as reviewCount, round(ifnull(rc.point, 0.0), 1) as avgPoint,
@@ -72,13 +79,18 @@ async function selectNewStoreByUserId(connection, params) {
                 limit 10;
                 `;
 
-  const row = await connection.query(query, params);
+  const row = await connection.query(query, userId, categoryId);
 
   return row[0];
-}
+};
 
 // 새로 들어왔어요 목록 조회 by address
-async function selectNewStoreByAddress(connection, lat, lng, categoryId) {
+export const selectNewStoreByAddress = async function (
+  connection: any,
+  lat: string,
+  lng: string,
+  categoryId: string
+) {
   const query = `
                 select s.id as storeId, s.storeName, smi.imageURL,
                       ifnull(rc.count, 0) as reviewCount, round(ifnull(rc.point, 0.0), 1) as avgPoint,
@@ -118,20 +130,20 @@ async function selectNewStoreByAddress(connection, lat, lng, categoryId) {
   const row = await connection.query(query, [lat, lng, categoryId, lat, lng]);
 
   return row[0];
-}
+};
 
 // 음식점 조회 by categoryId and userId
-async function selectStoresByCategoryIdAndUserId(
-  connection,
-  userId,
-  categoryCondition,
-  page,
-  size,
-  filterCondition,
-  cheetahCondition,
-  deliveryFeeCondition,
-  minPriceCondition,
-  couponCondition
+export const selectStoresByCategoryIdAndUserId = async function (
+  connection: any,
+  userId: number,
+  categoryCondition: string,
+  page: string,
+  size: string,
+  filterCondition: string,
+  cheetahCondition: string,
+  deliveryFeeCondition: string,
+  minPriceCondition: string,
+  couponCondition: string
 ) {
   const query = `
                 select s.id as storeId, group_concat(smi.imageURL order by smi.number) as imageArray,
@@ -188,21 +200,21 @@ async function selectStoresByCategoryIdAndUserId(
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 음식점 조회 by categoryId and address
-async function selectStoresByCategoryIdAndAddress(
-  connection,
-  lat,
-  lng,
-  categoryCondition,
-  page,
-  size,
-  filterCondition,
-  cheetahCondition,
-  deliveryFeeCondition,
-  minPriceCondition,
-  couponCondition
+export const selectStoresByCategoryIdAndAddress = async function (
+  connection: any,
+  lat: string,
+  lng: string,
+  categoryCondition: string,
+  page: string,
+  size: string,
+  filterCondition: string,
+  cheetahCondition: string,
+  deliveryFeeCondition: string,
+  minPriceCondition: string,
+  couponCondition: string
 ) {
   const query = `
                 select s.id as storeId, group_concat(smi.imageURL order by smi.number) as imageArray,
@@ -257,10 +269,13 @@ async function selectStoresByCategoryIdAndAddress(
   const row = await connection.query(query, [lat, lng, lat, lng]);
 
   return row[0];
-}
+};
 
 // 음식점 존재 여부 check
-async function checkStoreExist(connection, storeId) {
+export const checkStoreExist = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Store
@@ -270,11 +285,11 @@ async function checkStoreExist(connection, storeId) {
 
   const row = await connection.query(query, storeId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 음식점 상세페이지 조회
-async function selectStore(connection, storeId) {
+export const selectStore = async function (connection: any, storeId: string) {
   const query1 = `
                   select s.id as storeId, group_concat(smi.imageURL order by smi.number) as imageArray, s.storeName,
                         case
@@ -329,10 +344,13 @@ async function selectStore(connection, storeId) {
   };
 
   return result;
-}
+};
 
 // 음식점 배달비 자세히
-async function selectStoreDelivery(connection, storeId) {
+export const selectStoreDelivery = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select concat(format(orderPrice, 0), '원') as minPrice,
                       case
@@ -349,10 +367,13 @@ async function selectStoreDelivery(connection, storeId) {
   const row = await connection.query(query, storeId);
 
   return row[0];
-}
+};
 
 // 음식점 매장/원산지 정보 조회
-async function selectStoreInfo(connection, storeId) {
+export const selectStoreInfo = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select storeName,
                       concat('전화번호: ', storePhoneNum) as phoneNum,
@@ -368,23 +389,10 @@ async function selectStoreInfo(connection, storeId) {
   const row = await connection.query(query, storeId);
 
   return row[0];
-}
-
-// // 음식점 삭제 여부 check
-// async function checkStoreDeleted(connection, storeId) {
-//   const query = `
-//                 select isDeleted
-//                 from Store
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, storeId);
-
-//   return row[0][0]["isDeleted"];
-// }
+};
 
 // 메뉴 존재 여부 check
-async function checkMenuExist(connection, menuId) {
+export const checkMenuExist = async function (connection: any, menuId: string) {
   const query = `
                 select exists(select id
                               from StoreMenu
@@ -395,11 +403,11 @@ async function checkMenuExist(connection, menuId) {
 
   const row = await connection.query(query, menuId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 메인 메뉴 조회
-async function selectMainMenu(connection, menuId) {
+export const selectMainMenu = async function (connection: any, menuId: string) {
   const query1 = `
                   select group_concat(smi.imageURL order by smi.number) as imageArray, sm.menuName, sm.description,
                         concat(format(sm.price, 0), '원') as price
@@ -430,23 +438,14 @@ async function selectMainMenu(connection, menuId) {
   const result = { mainMenu: row1[0], subMenu: row2[0] };
 
   return result;
-}
-
-// // 메뉴 삭제 여부 check
-// async function checkMenuDeleted(connection, menuId) {
-//   const query = `
-//                 select isDeleted
-//                 from StoreMenu
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, menuId);
-
-//   return row[0][0]["isDeleted"];
-// }
+};
 
 // 이미 좋아요 클릭 여부 check
-async function checkStoreLike(connection, userId, storeId) {
+export const checkStoreLike = async function (
+  connection: any,
+  userId: number,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from StoreLike
@@ -458,10 +457,14 @@ async function checkStoreLike(connection, userId, storeId) {
   const row = await connection.query(query, [userId, storeId]);
 
   return row[0];
-}
+};
 
 // 음식점 즐겨찾기 추가
-async function createStoreLike(connection, userId, storeId) {
+export const createStoreLike = async function (
+  connection: any,
+  userId: number,
+  storeId: string
+) {
   const checkExistQuery = `
                   select exists(select id
                                 from StoreLike
@@ -474,7 +477,7 @@ async function createStoreLike(connection, userId, storeId) {
     storeId,
   ]);
 
-  if (checkExistRow[0][0]["exist"] === 0) {
+  if (checkExistRow[0][0]['exist'] === 0) {
     const query = `
                   insert into StoreLike (userId, storeId)
                   values (?, ?);
@@ -495,10 +498,14 @@ async function createStoreLike(connection, userId, storeId) {
 
     return row[0].info;
   }
-}
+};
 
 // 음식점 즐겨찾기 삭제
-async function deleteStoreLike(connection, userId, storeIdArr) {
+export const deleteStoreLike = async function (
+  connection: any,
+  userId: number,
+  storeIdArr: number[]
+) {
   let deleteCount = 0;
 
   for (let i = 0; i < storeIdArr.length; i++) {
@@ -517,10 +524,14 @@ async function deleteStoreLike(connection, userId, storeIdArr) {
   }
 
   return { deleteCount };
-}
+};
 
 // 즐겨찾기 목록 조회
-async function selectStoreLike(connection, userId, filterCondition) {
+export const selectStoreLike = async function (
+  connection: any,
+  userId: number,
+  filterCondition: string
+) {
   const query = `
                 select s.id as storeId, smi.imageURL, s.storeName, s.isCheetah,
                       concat(s.deliveryTime, '-', s.deliveryTime + 10, '분') as deliveryTime,
@@ -571,10 +582,13 @@ async function selectStoreLike(connection, userId, filterCondition) {
   const row = await connection.query(query, [userId, userId]);
 
   return { count: `총 ${row[0].length}개`, result: row[0] };
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -584,11 +598,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -598,27 +615,5 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
-
-module.exports = {
-  selectFoodCategory,
-  checkUserExist,
-  checkCategoryExist,
-  selectNewStoreByUserId,
-  selectNewStoreByAddress,
-  selectStoresByCategoryIdAndUserId,
-  selectStoresByCategoryIdAndAddress,
-  checkStoreExist,
-  selectStore,
-  selectStoreDelivery,
-  selectStoreInfo,
-  checkMenuExist,
-  selectMainMenu,
-  checkStoreLike,
-  createStoreLike,
-  deleteStoreLike,
-  selectStoreLike,
-  checkUserBlocked,
-  checkUserWithdrawn,
+  return row[0][0]['exist'];
 };
