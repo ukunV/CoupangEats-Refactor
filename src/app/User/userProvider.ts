@@ -6,7 +6,7 @@ import * as user_ctrl from '../../../controllers/user_ctrl';
 
 // 이메일 존재 여부 확인
 export const checkEmailExist = async function (email: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkEmailExist,
     'User-checkEmailExist Provider',
     email
@@ -17,7 +17,7 @@ export const checkEmailExist = async function (email: string) {
 
 // 전화번호 존재 여부 확인
 export const checkPhoneNumExist = async function (phoneNum: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkPhoneNumExist,
     'User-checkPhoneNumExist Provider',
     phoneNum
@@ -28,7 +28,7 @@ export const checkPhoneNumExist = async function (phoneNum: string) {
 
 // 비밀번호 확인
 export const checkPassword = async function (email: string, password: string) {
-  const salt = connect_provider(
+  const salt = await connect_provider(
     userDao.getSalt,
     'User-checkPassword Provider',
     email
@@ -36,7 +36,7 @@ export const checkPassword = async function (email: string, password: string) {
 
   const hashedPassword = await user_ctrl.makePasswordHashed(salt, password);
 
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkPassword,
     'User-checkPassword Provider',
     email,
@@ -48,7 +48,7 @@ export const checkPassword = async function (email: string, password: string) {
 
 // 유저 존재 여부 확인
 export const checkUserExist = async function (userId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkUserExist,
     'User-checkUserExist Provider',
     userId
@@ -59,7 +59,7 @@ export const checkUserExist = async function (userId: string) {
 
 // 홈 화면 조회 by userId
 export const selectHomeByUserId = async function (userId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectHomeByUserId,
     'User-selectHomeByUserId Provider',
     userId
@@ -74,7 +74,7 @@ export const selectHomebyAddress = async function (
   lat: string,
   lng: string
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectHomebyAddress,
     'User-selectHomebyAddress Provider',
     address,
@@ -87,7 +87,7 @@ export const selectHomebyAddress = async function (
 
 // 이벤트 목록 조회
 export const selectEventList = async function (userId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectEventList,
     'User-selectEventList Provider',
     userId
@@ -98,7 +98,7 @@ export const selectEventList = async function (userId: string) {
 
 // 이벤트 존재 여부 check
 export const checkEventExist = async function (eventId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkEventExist,
     'User-checkEventExist Provider',
     eventId
@@ -109,7 +109,7 @@ export const checkEventExist = async function (eventId: string) {
 
 // 이벤트 상세페이지 조회
 export const selectEvent = async function (eventId: string, distance: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectEvent,
     'User-selectEvent Provider',
     eventId,
@@ -121,7 +121,7 @@ export const selectEvent = async function (eventId: string, distance: string) {
 
 // 프랜차이즈 존재 여부 check
 export const checkFranchiseExist = async function (franchiseId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkFranchiseExist,
     'User-checkFranchiseExist Provider',
     franchiseId
@@ -136,7 +136,7 @@ export const eventToStore = async function (
   franchiseId: string,
   distance: string
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.eventToStore,
     'User-eventToStore Provider',
     userId,
@@ -149,7 +149,7 @@ export const eventToStore = async function (
 
 // 공지사항 목록 조회
 export const selectNoticeList = async function () {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectNoticeList,
     'User-selectNoticeList Provider'
   );
@@ -159,7 +159,7 @@ export const selectNoticeList = async function () {
 
 // 공지사항 세부페이지 조회
 export const selectNotice = async function (noticeId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectNotice,
     'User-selectNotice Provider',
     noticeId
@@ -170,7 +170,7 @@ export const selectNotice = async function (noticeId: string) {
 
 // 공지 존재 여부 check
 export const checkNoticeExist = async function (noticeId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkNoticeExist,
     'User-checkNoticeExist Provider',
     noticeId
@@ -181,7 +181,7 @@ export const checkNoticeExist = async function (noticeId: string) {
 
 // 계정 정지 여부 check
 export const checkUserBlocked = async function (userId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkUserBlocked,
     'User-checkUserBlocked Provider',
     userId
@@ -192,7 +192,7 @@ export const checkUserBlocked = async function (userId: string) {
 
 // 계정 탈퇴 여부 check
 export const checkUserWithdrawn = async function (userId: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkUserWithdrawn,
     'User-checkUserWithdrawn Provider',
     userId
@@ -206,7 +206,7 @@ export const checkMatchUserWithPhoneNum = async function (
   userName: string,
   phoneNum: string
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkMatchUserWithPhoneNum,
     'User-checkMatchUserWithPhoneNum Provider',
     userName,
@@ -221,7 +221,7 @@ export const checkAuthNumByPhoneNum = async function (
   phoneNum: string,
   authNum: number
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkAuthNumByPhoneNum,
     'User-checkAuthNumByPhoneNum Provider',
     phoneNum,
@@ -233,7 +233,7 @@ export const checkAuthNumByPhoneNum = async function (
 
 // 아이디 찾기 - 인증번호 확인 및 이메일 제공
 export const selectEmail = async function (phoneNum: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectEmail,
     'User-selectEmail Provider',
     phoneNum
@@ -244,7 +244,7 @@ export const selectEmail = async function (phoneNum: string) {
 
 // 계정 정지 여부 check - 로그인
 export const checkEmailBlocked = async function (email: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkEmailBlocked,
     'User-checkEmailBlocked Provider',
     email
@@ -255,7 +255,7 @@ export const checkEmailBlocked = async function (email: string) {
 
 // 계정 탈퇴 여부 check - 로그인
 export const checkEmailWithdrawn = async function (email: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkEmailWithdrawn,
     'User-checkEmailWithdrawn Provider',
     email
@@ -266,7 +266,7 @@ export const checkEmailWithdrawn = async function (email: string) {
 
 // 유저 전화번호 조회 - 비밀번호 찾기
 export const selectPhoneNum = async function (email: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectPhoneNum,
     'User-selectPhoneNum Provider',
     email
@@ -280,7 +280,7 @@ export const checkMatchUserWithEmail = async function (
   userName: string,
   email: string
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkMatchUserWithEmail,
     'User-checkMatchUserWithEmail Provider',
     userName,
@@ -295,7 +295,7 @@ export const checkAuthNumByEmail = async function (
   email: string,
   authNum: string
 ) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.checkAuthNumByEmail,
     'User-checkAuthNumByEmail Provider',
     email,
@@ -307,7 +307,7 @@ export const checkAuthNumByEmail = async function (
 
 // 유저 고유 아이디 조회
 export const selectUserId = async function (email: string) {
-  const result = connect_provider(
+  const result = await connect_provider(
     userDao.selectUserId,
     'User-selectUserId Provider',
     email

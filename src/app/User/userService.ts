@@ -13,7 +13,7 @@ export const createUser = async function (
   lat: string,
   lng: string
 ) {
-  const result = connect_service(
+  const result = await connect_service(
     userDao.createUser,
     'User-createUser Service',
     email,
@@ -31,9 +31,9 @@ export const createUser = async function (
 // 아이디 찾기 - 인증번호 전송 및 저장
 export const updateAuthNumByPhoneNum = async function (
   phoneNum: string,
-  authNum: string
+  authNum: number
 ) {
-  const result = connect_service(
+  const result = await connect_service(
     userDao.updateAuthNumByPhoneNum,
     'User-updateAuthNumByPhoneNum Service',
     phoneNum,
@@ -46,9 +46,9 @@ export const updateAuthNumByPhoneNum = async function (
 // 비밀번호 찾기 - 인증번호 전송 및 저장
 export const updateAuthNumByEmail = async function (
   email: string,
-  authNum: string
+  authNum: number
 ) {
-  const result = connect_service(
+  const result = await connect_service(
     userDao.updateAuthNumByEmail,
     'User-updateAuthNumByEmail Service',
     email,
@@ -64,7 +64,7 @@ export const updatePassword = async function (
   salt: string,
   email: string
 ) {
-  const result = connect_service(
+  const result = await connect_service(
     userDao.updatePassword,
     'User-updatePassword Service',
     hashedPassword,

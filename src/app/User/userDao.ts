@@ -1,5 +1,5 @@
 // 이메일 존재 여부 확인
-export const checkEmailExist = async function (connection, email) {
+export const checkEmailExist = async function (connection: any, email: string) {
   const query = `
                 select exists(select email
                               from User
@@ -12,7 +12,10 @@ export const checkEmailExist = async function (connection, email) {
 };
 
 // 전화번호 존재 여부 확인
-export const checkPhoneNumExist = async function (connection, phoneNum) {
+export const checkPhoneNumExist = async function (
+  connection: any,
+  phoneNum: string
+) {
   const query = `
                 select exists(select phoneNum
                               from User
@@ -27,14 +30,14 @@ export const checkPhoneNumExist = async function (connection, phoneNum) {
 
 // 회원가입
 export const createUser = async function (
-  connection,
-  email,
-  salt,
-  hashedPassword,
-  name,
-  phoneNum,
-  lat,
-  lng
+  connection: any,
+  email: string,
+  salt: string,
+  hashedPassword: string,
+  name: string,
+  phoneNum: string,
+  lat: string,
+  lng: string
 ) {
   const query = `
                 insert into User(email, salt, password, name,
@@ -57,7 +60,7 @@ export const createUser = async function (
 };
 
 // salt값 가져오기
-export const getSalt = async function (connection, email) {
+export const getSalt = async function (connection: any, email: string) {
   const query = `
                 select salt
                 from User
@@ -71,9 +74,9 @@ export const getSalt = async function (connection, email) {
 
 // 비밀번호 확인
 export const checkPassword = async function (
-  connection,
-  email,
-  hashedPassword
+  connection: any,
+  email: string,
+  hashedPassword: string
 ) {
   const query = `
                 select ifnull(id, 0) as id
@@ -87,7 +90,7 @@ export const checkPassword = async function (
 };
 
 // 유저 존재 여부 확인
-export const checkUserExist = async function (connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id
                               from User
@@ -100,7 +103,7 @@ export const checkUserExist = async function (connection, userId) {
 };
 
 // // 유저 주소 변경
-// async function updateAddress(connection, params) {
+// async function updateAddress(connection: any, params) {
 //   const query = `
 //                 update User
 //                 set userLatitude = ?, userLongtitude = ?
@@ -113,7 +116,10 @@ export const checkUserExist = async function (connection, userId) {
 // }
 
 // 홈 화면 조회 by userId
-export const selectHomeByUserId = async function (connection, userId) {
+export const selectHomeByUserId = async function (
+  connection: any,
+  userId: number
+) {
   const query1 = `
                   select case
                           when a.nickname != '' and a.nickname is not null
@@ -300,10 +306,10 @@ export const selectHomeByUserId = async function (connection, userId) {
 
 // 홈 화면 조회 by address
 export const selectHomebyAddress = async function (
-  connection,
-  address,
-  lat,
-  lng
+  connection: any,
+  address: string,
+  lat: string,
+  lng: string
 ) {
   const query1 = `
                   select e.subImageURL as eventImageURL, ROW_NUMBER() over (order by e.createdAt desc) AS number
@@ -461,7 +467,10 @@ export const selectHomebyAddress = async function (
 };
 
 // 이벤트 목록 조회
-export const selectEventList = async function (connection, userId) {
+export const selectEventList = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select e.id as eventId, e.subImageURL, date_format(e.endDate, '~ %m.%d 까지') as endDate,
                       min(format(getDistance(u.userLatitude, u.userLongtitude, s.storeLatitude, s.storeLongtitude), 1)) as distance
@@ -483,7 +492,10 @@ export const selectEventList = async function (connection, userId) {
 };
 
 // 이벤트 존재 여부 check
-export const checkEventExist = async function (connection, eventId) {
+export const checkEventExist = async function (
+  connection: any,
+  eventId: string
+) {
   const query = `
                 select exists(select id
                               from Event
@@ -496,21 +508,12 @@ export const checkEventExist = async function (connection, eventId) {
   return row[0][0]['exist'];
 };
 
-// // 이벤트 상태 check
-// export const checkEventStatus = async function (connection, eventId) {
-//   const query = `
-//                 select status
-//                 from Event
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, eventId);
-
-//   return row[0][0]["status"];
-// }
-
 // 이벤트 상세페이지 조회
-export const selectEvent = async function (connection, eventId, distance) {
+export const selectEvent = async function (
+  connection: any,
+  eventId: string,
+  distance: string
+) {
   const query = `
                 select e.imageURL, e.midDescription, e.endDescription,
                       e.franchiseId, c.number as couponNumber
@@ -534,7 +537,10 @@ export const selectEvent = async function (connection, eventId, distance) {
 };
 
 // 프랜차이즈 존재 여부 check
-export const checkFranchiseExist = async function (connection, franchiseId) {
+export const checkFranchiseExist = async function (
+  connection: any,
+  franchiseId: string
+) {
   const query = `
                 select exists(select id from Franchise where id = ?) as exist;
                 `;
@@ -546,10 +552,10 @@ export const checkFranchiseExist = async function (connection, franchiseId) {
 
 // 이벤트 페이지 스토어로 이동
 export const eventToStore = async function (
-  connection,
-  userId,
-  franchiseId,
-  distance
+  connection: any,
+  userId: number,
+  franchiseId: string,
+  distance: string
 ) {
   const query1 = `
                   select s.id as storeId, group_concat(smi.imageURL) as imageArray, s.storeName,
@@ -618,7 +624,7 @@ export const eventToStore = async function (
 };
 
 // 공지사항 목록 조회
-export const selectNoticeList = async function (connection) {
+export const selectNoticeList = async function (connection: any) {
   const query = `
                 select id as noticeId,
                       date_format(createdAt, '%Y.%m.%d') as createdAt, title
@@ -633,7 +639,10 @@ export const selectNoticeList = async function (connection) {
 };
 
 // 공지 존재 여부 check
-export const checkNoticeExist = async function (connection, noticeId) {
+export const checkNoticeExist = async function (
+  connection: any,
+  noticeId: string
+) {
   const query = `
                 select exists(select id
                               from Notice
@@ -646,21 +655,8 @@ export const checkNoticeExist = async function (connection, noticeId) {
   return row[0][0]['exist'];
 };
 
-// // 공지 상태 check
-// export const checkNoticeDeleted = async function (connection, noticeId) {
-//   const query = `
-//                 select isDeleted
-//                 from Notice
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, noticeId);
-
-//   return row[0][0]["isDeleted"];
-// }
-
 // 공지사항 세부페이지 조회
-export const selectNotice = async function (connection, noticeId) {
+export const selectNotice = async function (connection: any, noticeId: string) {
   const query = `
                 select id as noticeId,
                       date_format(createdAt, '%Y.%m.%d') as createdAt, title, contents
@@ -674,7 +670,10 @@ export const selectNotice = async function (connection, noticeId) {
 };
 
 // 계정 정지 여부 확인
-export const checkUserBlocked = async function (connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -688,7 +687,10 @@ export const checkUserBlocked = async function (connection, userId) {
 };
 
 // 계정 탈퇴 여부 확인
-export const checkUserWithdrawn = async function (connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -703,9 +705,9 @@ export const checkUserWithdrawn = async function (connection, userId) {
 
 // 유저 존재 여부 check - 아이디 찾기
 export const checkMatchUserWithPhoneNum = async function (
-  connection,
-  userName,
-  phoneNum
+  connection: any,
+  userName: string,
+  phoneNum: string
 ) {
   const query = `
                 select exists(select id
@@ -721,9 +723,9 @@ export const checkMatchUserWithPhoneNum = async function (
 
 // 아이디 찾기 - 인증번호 전송 및 저장
 export const updateAuthNumByPhoneNum = async function (
-  connection,
-  phoneNum,
-  authNum
+  connection: any,
+  phoneNum: string,
+  authNum: string
 ) {
   const query = `
                 update User
@@ -738,9 +740,9 @@ export const updateAuthNumByPhoneNum = async function (
 
 // 인증번호 일치여부 check - 아이디
 export const checkAuthNumByPhoneNum = async function (
-  connection,
-  phoneNum,
-  authNum
+  connection: any,
+  phoneNum: string,
+  authNum: string
 ) {
   const query = `
                 select exists(select id
@@ -755,7 +757,7 @@ export const checkAuthNumByPhoneNum = async function (
 };
 
 // 아이디 찾기 - 인증번호 확인 및 이메일 제공
-export const selectEmail = async function (connection, phoneNum) {
+export const selectEmail = async function (connection: any, phoneNum: string) {
   const query = `
                 select concat(rpad(left(substring_index(email, '@', 1), 2),
                                   char_length(substring_index(email, '@', 1)), '*'),
@@ -770,7 +772,10 @@ export const selectEmail = async function (connection, phoneNum) {
 };
 
 // 계정 정지 여부 check - 로그인
-export const checkEmailBlocked = async function (connection, email) {
+export const checkEmailBlocked = async function (
+  connection: any,
+  email: string
+) {
   const query = `
                 select exists(select id
                               from User
@@ -784,7 +789,10 @@ export const checkEmailBlocked = async function (connection, email) {
 };
 
 // 계정 탈퇴 여부 check - 로그인
-export const checkEmailWithdrawn = async function (connection, email) {
+export const checkEmailWithdrawn = async function (
+  connection: any,
+  email: string
+) {
   const query = `
                 select exists(select id
                               from User
@@ -799,9 +807,9 @@ export const checkEmailWithdrawn = async function (connection, email) {
 
 // 유저 존재 여부 check - 비밀번호 찾기
 export const checkMatchUserWithEmail = async function (
-  connection,
-  userName,
-  email
+  connection: any,
+  userName: string,
+  email: string
 ) {
   const query = `
                 select exists(select id
@@ -816,7 +824,7 @@ export const checkMatchUserWithEmail = async function (
 };
 
 // 비밀번호 찾기 - 인증번호 전송 및 저장
-export const selectPhoneNum = async function (connection, email) {
+export const selectPhoneNum = async function (connection: any, email: string) {
   const query = `
                 select phoneNum
                 from User
@@ -830,9 +838,9 @@ export const selectPhoneNum = async function (connection, email) {
 
 // 비밀번호 찾기 - 인증번호 전송 및 저장
 export const updateAuthNumByEmail = async function (
-  connection,
-  email,
-  authNum
+  connection: any,
+  email: string,
+  authNum: number
 ) {
   const query = `
                 update User
@@ -846,7 +854,11 @@ export const updateAuthNumByEmail = async function (
 };
 
 // 인증번호 일치여부 check - 비밀번호
-export const checkAuthNumByEmail = async function (connection, email, authNum) {
+export const checkAuthNumByEmail = async function (
+  connection: any,
+  email: string,
+  authNum: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -861,10 +873,10 @@ export const checkAuthNumByEmail = async function (connection, email, authNum) {
 
 // 비밀번호 찾기 - 인증번호 확인 및 비밀번호 재설정
 export const updatePassword = async function (
-  connection,
-  hashedPassword,
-  salt,
-  email
+  connection: any,
+  hashedPassword: string,
+  salt: string,
+  email: string
 ) {
   const query = `
                 update User
@@ -878,7 +890,7 @@ export const updatePassword = async function (
 };
 
 // 유저 고유 아이디 조회
-export const selectUserId = async function (connection, email) {
+export const selectUserId = async function (connection: any, email: string) {
   const query = `
                 select id
                 from User

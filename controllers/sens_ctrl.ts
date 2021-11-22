@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as crypto from 'crypto';
 import { sensSecret as sensKey } from '../config/sens_config';
 
-class NCPClient {
+export class NCPClient {
   constructor(options) {
     const { phoneNumber, serviceId, secretKey, accessKey } = options;
     this.phoneNumber = phoneNumber;
@@ -88,14 +88,14 @@ class NCPClient {
 }
 
 // 랜덤 인증번호 생성 함수
-function createAuthNum() {
+export function createAuthNum() {
   const randNum = Math.floor(Math.random() * 900000) + 100000;
 
   return randNum;
 }
 
 // ncp-sens 문자전송 함수
-const messageAuth = async function (
+export const messageAuth = async function (
   type: number,
   phoneNum: string,
   authNum: number
@@ -126,10 +126,4 @@ const messageAuth = async function (
     console.log(status);
     console.log(msg);
   }
-};
-
-module.exports = {
-  NCPClient,
-  createAuthNum,
-  messageAuth,
 };

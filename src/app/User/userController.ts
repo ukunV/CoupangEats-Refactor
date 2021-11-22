@@ -4,8 +4,8 @@ import * as baseResponse from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 import { jwtsecret as secret_config } from '../../../config/secret';
 import * as jwt from 'jsonwebtoken';
-import axios from 'axios';
-import * as passport from 'passport';
+// import axios from 'axios';
+// import * as passport from 'passport';
 
 import regexEmail from 'regex-email';
 
@@ -31,7 +31,6 @@ import * as ncpSens from '../../../controllers/sens_ctrl';
 
 // nodemailer
 import { resetPasswordMail as mailer } from '../../../controllers/mail_ctrl';
-import { type } from 'os';
 
 // regex
 // const regexName = /^[가-힣]+$/;
