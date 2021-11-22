@@ -1,16 +1,19 @@
 // 유저 존재 여부 check
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 음식점 존재 여부 check
-async function checkStoreExist(connection, storeId) {
+export const checkStoreExist = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Store
@@ -20,24 +23,14 @@ async function checkStoreExist(connection, storeId) {
 
   const row = await connection.query(query, storeId);
 
-  return row[0][0]["exist"];
-}
-
-// // 음식점 삭제 여부 check
-// async function checkStoreDeleted(connection, storeId) {
-//   const query = `
-//                 select isDeleted
-//                 from Store
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, storeId);
-
-//   return row[0][0]["isDeleted"];
-// }
+  return row[0][0]['exist'];
+};
 
 // 최근 포토 리뷰 3개 조회
-async function selectPhotoReviews(connection, storeId) {
+export const selectPhotoReviews = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select id as reviewId, imageURL, point, contents
                 from Review
@@ -51,16 +44,16 @@ async function selectPhotoReviews(connection, storeId) {
   const row = await connection.query(query, storeId);
 
   return row[0];
-}
+};
 
 // 리뷰 조회
-async function selectReviewList(
-  connection,
-  storeId,
-  page,
-  size,
-  condition,
-  photoCondition
+export const selectReviewList = async function (
+  connection: any,
+  storeId: string,
+  page: string,
+  size: string,
+  condition: string,
+  photoCondition: string
 ) {
   const query1 = `
                   select round(ifnull(avg(point), 0.0), 1) as avgPoint,
@@ -128,10 +121,14 @@ async function selectReviewList(
   const result = { storeInfo: row1[0], reviewList: row2[0] };
 
   return result;
-}
+};
 
 // 주문과 회원 일치 여부 check
-async function checkUsersOrder(connection, userId, orderId) {
+export const checkUsersOrder = async function (
+  connection: any,
+  userId: number,
+  orderId: string
+) {
   const query = `
                 select exists(select id
                               from OrderList
@@ -141,22 +138,28 @@ async function checkUsersOrder(connection, userId, orderId) {
 
   const row = await connection.query(query, [orderId, userId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 존재 여부 check
-async function checkOrderExist(connection, orderId) {
+export const checkOrderExist = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select exists(select id from OrderList where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, orderId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 취소 여부 check
-async function checkOrderDeleted(connection, orderId) {
+export const checkOrderDeleted = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select isDeleted
                 from OrderList
@@ -165,11 +168,14 @@ async function checkOrderDeleted(connection, orderId) {
 
   const row = await connection.query(query, orderId);
 
-  return row[0][0]["isDeleted"];
-}
+  return row[0][0]['isDeleted'];
+};
 
 // 리뷰 존재 여부 check
-async function checkReviewExistByOrderId(connection, orderId) {
+export const checkReviewExistByOrderId = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select reviewStatus
                 from OrderList
@@ -179,17 +185,17 @@ async function checkReviewExistByOrderId(connection, orderId) {
 
   const row = await connection.query(query, orderId);
 
-  return row[0][0]["reviewStatus"];
-}
+  return row[0][0]['reviewStatus'];
+};
 
 // 리뷰 작성
-async function createReview(
-  connection,
-  userId,
-  orderId,
-  imageURL,
-  contents,
-  point
+export const createReview = async function (
+  connection: any,
+  userId: number,
+  orderId: string,
+  imageURL: string,
+  contents: string,
+  point: string
 ) {
   const getStoreIdQuery = `
                 select storeId
@@ -199,9 +205,9 @@ async function createReview(
 
   const getStoreIdRow = await connection.query(getStoreIdQuery, orderId);
 
-  const storeId = getStoreIdRow[0][0]["storeId"];
+  const storeId = getStoreIdRow[0][0]['storeId'];
 
-  if (imageURL === "") {
+  if (imageURL === '') {
     const query1 = `
                   insert into Review (userId, orderId, storeId,
                                       contents, point)
@@ -251,10 +257,13 @@ async function createReview(
 
     return row1[0];
   }
-}
+};
 
 // 리뷰 존재 여부 check
-async function checkReviewExistByReviewId(connection, reviewId) {
+export const checkReviewExistByReviewId = async function (
+  connection: any,
+  reviewId: string
+) {
   const query = `
                 select exists(select id
                               from Review
@@ -264,11 +273,15 @@ async function checkReviewExistByReviewId(connection, reviewId) {
 
   const row = await connection.query(query, reviewId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 리뷰 작성자 여부 check
-async function checkReviewHost(connection, userId, reviewId) {
+export const checkReviewHost = async function (
+  connection: any,
+  userId: number,
+  reviewId: string
+) {
   const query = `
                 select exists(select id
                               from Review
@@ -278,11 +291,11 @@ async function checkReviewHost(connection, userId, reviewId) {
 
   const row = await connection.query(query, [userId, reviewId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 리뷰 삭제
-async function deleteReview(connection, reviewId) {
+export const deleteReview = async function (connection: any, reviewId: string) {
   const query = `
                 update Review
                 set isDeleted = 0
@@ -292,15 +305,15 @@ async function deleteReview(connection, reviewId) {
   const row = await connection.query(query, reviewId);
 
   return row[0].info;
-}
+};
 
 // 리뷰 신고
-async function reportReview(
-  connection,
-  userId,
-  reviewId,
-  selectReasonArr,
-  commentReason
+export const reportReview = async function (
+  connection: any,
+  userId: number,
+  reviewId: string,
+  selectReasonArr: number[],
+  commentReason: string
 ) {
   const query1 = `
                   insert into ReviewReported (userId, reviewId, commentReason)
@@ -325,7 +338,7 @@ async function reportReview(
     reviewId,
   ]);
 
-  const reportId = getReportIdRow[0][0]["id"];
+  const reportId = getReportIdRow[0][0]['id'];
 
   let insertCount = 0;
 
@@ -343,10 +356,14 @@ async function reportReview(
   }
 
   return { reportResult: row1[0], selectedReasonCount: insertCount };
-}
+};
 
 // 해당 유저가 이미 신고했는지 check
-async function checkAlreadyReport(connection, userId, reviewId) {
+export const checkAlreadyReport = async function (
+  connection: any,
+  userId: number,
+  reviewId: string
+) {
   const query = `
                 select exists(select id
                               from ReviewReported
@@ -356,11 +373,14 @@ async function checkAlreadyReport(connection, userId, reviewId) {
 
   const row = await connection.query(query, [userId, reviewId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 내가 작성한 리뷰 조회
-async function selectMyReview(connection, orderId) {
+export const selectMyReview = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select r.id as reviewId, s.storeName, r.point,
                       case
@@ -404,11 +424,17 @@ async function selectMyReview(connection, orderId) {
   const row = await connection.query(query, orderId);
 
   return row[0];
-}
+};
 
 // 리뷰 수정
-async function modifyReview(connection, reviewId, point, contents, imageURL) {
-  if (imageURL === "") {
+export const modifyReview = async function (
+  connection: any,
+  reviewId: string,
+  point: string,
+  contents: string,
+  imageURL: string
+) {
+  if (imageURL === '') {
     const query1 = `
                     update Review
                     set point = ?, contents = ?, imageURL = null, isPhoto = 0
@@ -434,10 +460,13 @@ async function modifyReview(connection, reviewId, point, contents, imageURL) {
 
     return row1[0].info;
   }
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -447,11 +476,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -461,26 +493,5 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
-
-module.exports = {
-  checkUserExist,
-  checkStoreExist,
-  selectPhotoReviews,
-  selectReviewList,
-  checkUsersOrder,
-  checkOrderExist,
-  checkOrderDeleted,
-  checkReviewExistByOrderId,
-  createReview,
-  checkReviewExistByReviewId,
-  checkReviewHost,
-  deleteReview,
-  reportReview,
-  checkAlreadyReport,
-  selectMyReview,
-  modifyReview,
-  checkUserBlocked,
-  checkUserWithdrawn,
+  return row[0][0]['exist'];
 };

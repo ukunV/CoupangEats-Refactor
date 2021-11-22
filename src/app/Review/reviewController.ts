@@ -1,15 +1,7 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const reviewProvider = require("../../app/Review/reviewProvider");
-const reviewService = require("../../app/Review/reviewService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const passport = require("passport");
-
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
+import * as reviewProvider from '../../app/Review/reviewProvider';
+import * as reviewService from '../../app/Review/reviewService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
 // regular expression
 const regPage = /^[0-9]/;
@@ -22,7 +14,7 @@ const regSelectedReason = /^[0-9]/;
  * [GET] /reviews/:storeId/photo-review
  * path variable: storeId
  */
-exports.getPhotoReviews = async function (req, res) {
+export const getPhotoReviews = async function (req: any, res: any) {
   const { storeId } = req.params;
 
   // Request Error Start
@@ -52,10 +44,11 @@ exports.getPhotoReviews = async function (req, res) {
  * path variable: storeId
  * query string: (page, size), (filter, photoFilter)
  */
-exports.getReviewList = async function (req, res) {
+export const getReviewList = async function (req: any, res: any) {
   const { storeId } = req.params;
 
-  let { page, size } = req.query;
+  let { page } = req.query;
+  const { size } = req.query;
 
   const { filter, photoFilter } = req.query;
 
@@ -63,16 +56,10 @@ exports.getReviewList = async function (req, res) {
 
   if (!storeId) return res.send(errResponse(baseResponse.STORE_ID_IS_EMPTY)); // 2026
 
-  if ((photoFilter != 0) & (photoFilter != 1) & (photoFilter != ""))
+  if (photoFilter != 0 && photoFilter != 1 && photoFilter != '')
     return res.send(errResponse(baseResponse.PHOTO_FILTER_IS_NOT_VALID)); // 2036
 
-  if (
-    (filter != 1) &
-    (filter != 2) &
-    (filter != 3) &
-    (filter != 4) &
-    (filter != "")
-  )
+  if (filter != 1 && filter != 2 && filter != 3 && filter != 4 && filter != '')
     return res.send(errResponse(baseResponse.FILTER_IS_NOT_VALID)); // 2028
 
   if (!page) return res.send(response(baseResponse.PAGE_IS_EMPTY)); // 2017
@@ -98,18 +85,18 @@ exports.getReviewList = async function (req, res) {
 
   // Response Error End
 
-  let condition = "order by ";
+  let condition = 'order by ';
 
-  if (filter === "1") condition += "r.createdAt desc";
-  else if (filter === "2") condition += "rlc.count desc, r.createdAt desc";
-  else if (filter === "3") condition += "r.point desc, r.createdAt desc";
-  else if (filter === "4") condition += "r.point asc, r.createdAt desc";
-  else condition += "r.createdAt desc";
+  if (filter === '1') condition += 'r.createdAt desc';
+  else if (filter === '2') condition += 'rlc.count desc, r.createdAt desc';
+  else if (filter === '3') condition += 'r.point desc, r.createdAt desc';
+  else if (filter === '4') condition += 'r.point asc, r.createdAt desc';
+  else condition += 'r.createdAt desc';
 
   let photoCondition;
 
-  if (photoFilter === "1") photoCondition = "and isPhoto = 1";
-  else photoCondition = "";
+  if (photoFilter === '1') photoCondition = 'and isPhoto = 1';
+  else photoCondition = '';
 
   const result = await reviewProvider.selectReviewList(
     storeId,
@@ -127,7 +114,7 @@ exports.getReviewList = async function (req, res) {
  * API Name : 리뷰 작성 API
  * [POST] /reviews/detail
  */
-exports.createReview = async function (req, res) {
+export const createReview = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { orderId, imageURL, contents, point } = req.body;
@@ -140,7 +127,7 @@ exports.createReview = async function (req, res) {
 
   if (!point) return res.send(errResponse(baseResponse.POINT_IS_EMPTY)); // 2039
 
-  if ((point != 1) & (point != 2) & (point != 3) & (point != 4) & (point != 5))
+  if (point != 1 && point != 2 && point != 3 && point != 4 && point != 5)
     return res.send(errResponse(baseResponse.POINT_IS_NOT_VALID)); // 2038
 
   if (contents.length < 10)
@@ -204,7 +191,7 @@ exports.createReview = async function (req, res) {
  * API Name : 리뷰 삭제 API
  * [PATCH] /reviews
  */
-exports.deleteReview = async function (req, res) {
+export const deleteReview = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { reviewId } = req.body;
@@ -260,7 +247,7 @@ exports.deleteReview = async function (req, res) {
  * API Name : 리뷰 신고 API
  * [POST] /reviews
  */
-exports.reportReview = async function (req, res) {
+export const reportReview = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { reviewId } = req.params;
@@ -351,7 +338,7 @@ exports.reportReview = async function (req, res) {
  * API Name : 내가 작성한 리뷰 조회 API
  * [GET] /reviews/:orderId/review-detail
  */
-exports.getMyReview = async function (req, res) {
+export const getMyReview = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { orderId } = req.params;
@@ -414,7 +401,7 @@ exports.getMyReview = async function (req, res) {
  * API Name : 리뷰 수정 API
  * [PATCH] /reviews/detail
  */
-exports.modifyReview = async function (req, res) {
+export const modifyReview = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { reviewId } = req.body;
@@ -429,7 +416,7 @@ exports.modifyReview = async function (req, res) {
 
   if (!point) return res.send(errResponse(baseResponse.POINT_IS_EMPTY)); // 2039
 
-  if ((point != 1) & (point != 2) & (point != 3) & (point != 4) & (point != 5))
+  if (point != 1 && point != 2 && point != 3 && point != 4 && point != 5)
     return res.send(errResponse(baseResponse.POINT_IS_NOT_VALID)); // 2038
 
   if (contents.length < 10)
