@@ -1,11 +1,11 @@
-const nodemailer = require("nodemailer");
-const mailConf = require("../config/mail_config");
+const nodemailer = require('nodemailer');
+const mailConf = require('../config/mail_config');
 
-const sendMail = async (mail) => {
+const sendMail = async mail => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      host: "smtp.gmail.com",
+      service: 'gmail',
+      host: 'smtp.gmail.com',
       port: 587,
       secure: false,
       auth: {
@@ -24,7 +24,7 @@ const sendMail = async (mail) => {
 
 const resetPasswordMail = async (authNum, to) => {
   const mail = {
-    from: "CoupangEats",
+    from: 'CoupangEats',
     to: to,
     subject: `[쿠팡이츠] 비밀번호 재설정 인증번호 안내 메일입니다.`,
     text: `비밀번호 재설정 인증번호를 확인하세요.`,

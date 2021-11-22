@@ -1,15 +1,13 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const userProvider = require("../../app/User/userProvider");
-const userService = require("../../app/User/userService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const passport = require("passport");
+import * as userProvider from '../../app/User/userProvider';
+import * as userService from '../../app/User/userService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
+import { jwtsecret as secret_config } from '../../../config/secret';
+import * as jwt from 'jsonwebtoken';
+import axios from 'axios';
+import * as passport from 'passport';
 
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
+import regexEmail from 'regex-email';
 
 // const firebaseAdmin = require("firebase-admin");
 // const serviceAccount = require("../../../config/firebase_key.json");
@@ -19,70 +17,33 @@ const { emit } = require("nodemon");
 // });
 
 // salt
-const user_ctrl = require("../../../controllers/user_ctrl");
+import user_ctrl = require('../../../controllers/user_ctrl');
 
 // 카카오 로그인
-const kakao_key = require("../../../config/kakao_config").sercetKey;
-const KakaoStrategy = require("passport-kakao").Strategy;
+// import { secretKey as kakao_key } from '../../../config/kakao_config';
+// import { Strategy as KakaoStrategy } from 'passport-kakao';
 
 // 카카오 주소 검색
-const kakaoMap = require("../../../controllers/kakao_ctrl").getAddressInfo;
+import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';
 
 // ncp-sens
-const { NCPClient } = require("../../../controllers/sens_ctrl");
-const sensKey = require("../../../config/sens_config").sensSecret;
+import * as ncpSens from '../../../controllers/sens_ctrl';
 
 // nodemailer
-const mailer = require("../../../controllers/mail_ctrl").resetPasswordMail;
+import { resetPasswordMail as mailer } from '../../../controllers/mail_ctrl';
+import { type } from 'os';
 
 // regex
 // const regexName = /^[가-힣]+$/;
 const regPhoneNum = /^\d{10,11}$/;
 const regDistance = /^[0-9]+(.[0-9]+)?$/;
 
-// 랜덤 인증번호 생성 함수
-function createAuthNum() {
-  const randNum = Math.floor(Math.random() * 900000) + 100000;
-
-  return randNum;
-}
-
-// ncp-sens 문자전송 함수
-const messageAuth = async function (type, phoneNum, authNum) {
-  const ncp = new NCPClient({
-    ...sensKey,
-  });
-
-  const to = phoneNum;
-  let content;
-
-  if (type === 1)
-    content = `쿠팡 휴대폰 인증번호 [${authNum}] 위 번호를 인증 창에 입력하세요.`;
-  else
-    content = `비밀번호 변경을 위한 인증번호는 [${authNum}]입니다. 신규 비밀번호로 재설정해주세요.`;
-
-  const { success, status, msg } = await ncp.sendSMS({
-    to,
-    content,
-  });
-
-  if (!success) {
-    console.log(
-      `(ERROR) node-sens error: ${msg}, Status ${status} Date ${Date.now()}`
-    );
-  } else {
-    console.log(success);
-    console.log(status);
-    console.log(msg);
-  }
-};
-
 /**
  * API No. 0
  * API Name : 테스트 API
  * [GET] /app/test
  */
-// exports.getTest = async function (req, res) {
+// export const getTest = async function (req, res) {
 //   return res.send(response(baseResponse.SUCCESS));
 // };
 
@@ -91,7 +52,7 @@ const messageAuth = async function (type, phoneNum, authNum) {
  * API Name : 회원가입 API
  * [POST] /users/sign-up
  */
-exports.createUsers = async function (req, res) {
+export const createUsers = async function (req: any, res: any) {
   const { email, password, name, phoneNum } = req.body;
 
   const { address } = req.body;
@@ -123,7 +84,7 @@ exports.createUsers = async function (req, res) {
   if (!regPhoneNum.test(phoneNum))
     return res.send(response(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
 
-  if (location.length)
+  if (typeof location === 'string')
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
 
   // Request Error End
@@ -161,10 +122,10 @@ exports.createUsers = async function (req, res) {
     {
       userId: result.insertId,
     }, // 토큰의 내용(payload)
-    secret_config.jwtsecret, // 비밀키
+    secret_config, // 비밀키
     {
-      expiresIn: "365d",
-      subject: "userInfo",
+      expiresIn: '365d',
+      subject: 'userInfo',
     } // 유효 기간 365일
   );
 
@@ -179,7 +140,7 @@ exports.createUsers = async function (req, res) {
  * [POST] /users/sign-in
  */
 
-exports.userLogIn = async function (req, res) {
+export const userLogIn = async function (req: any, res: any) {
   const { email, password } = req.body;
 
   // Request Error Start
@@ -229,10 +190,10 @@ exports.userLogIn = async function (req, res) {
     {
       userId: selectUserId,
     }, // 토큰의 내용(payload)
-    secret_config.jwtsecret, // 비밀키
+    secret_config, // 비밀키
     {
-      expiresIn: "365d",
-      subject: "userInfo",
+      expiresIn: '365d',
+      subject: 'userInfo',
     } // 유효 기간 365일
   );
 
@@ -247,7 +208,7 @@ exports.userLogIn = async function (req, res) {
  * [POST] /users/sign-out
  */
 
-exports.userLogOut = async function (req, res) {
+export const userLogOut = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   //Request Error Start
@@ -275,9 +236,9 @@ exports.userLogOut = async function (req, res) {
 
   // Response Error End
 
-  res.clearCookie("x-access-token");
+  res.clearCookie('x-access-token');
 
-  return res.send(response(baseResponse.SUCCESS, "Logout Successfully"));
+  return res.send(response(baseResponse.SUCCESS, 'Logout Successfully'));
 };
 
 /**
@@ -286,7 +247,7 @@ exports.userLogOut = async function (req, res) {
  * [PATCH] /users/address
  */
 
-// exports.changeAddress = async function (req, res) {
+// export const changeAddress = async function (req, res) {
 //   const { userId } = req.verifiedToken;
 //   const { lat, lng } = req.body;
 
@@ -325,16 +286,16 @@ exports.userLogOut = async function (req, res) {
  * query string: encodedAddress
  */
 
-exports.getHome = async function (req, res) {
+export const getHome = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { encodedAddress } = req.query;
   const address = decodeURIComponent(encodedAddress);
-  const location = kakaoMap(address);
+  const location = await kakaoMap(address);
 
   // Request Error Start
 
-  if (location.length) {
+  if (typeof location === 'string') {
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
   }
 
@@ -363,15 +324,15 @@ exports.getHome = async function (req, res) {
     const result = await userProvider.selectHomeByUserId(userId);
 
     return res.send(response(baseResponse.SUCCESS, result));
-  } else {
-    const result = await userProvider.selectHomebyAddress(
-      address,
-      location.lat,
-      location.lng
-    );
-
-    return res.send(response(baseResponse.SUCCESS, result));
   }
+
+  const result = await userProvider.selectHomebyAddress(
+    address,
+    location.lat,
+    location.lng
+  );
+
+  return res.send(response(baseResponse.SUCCESS, result));
 };
 
 /**
@@ -380,7 +341,7 @@ exports.getHome = async function (req, res) {
  * [GET] /users/my-eats/event-list
  */
 
-exports.getEventList = async function (req, res) {
+export const getEventList = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   //Request Error Start
@@ -420,7 +381,7 @@ exports.getEventList = async function (req, res) {
  * query string: distance
  */
 
-exports.getEvent = async function (req, res) {
+export const getEvent = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { eventId } = req.params;
@@ -475,7 +436,7 @@ exports.getEvent = async function (req, res) {
  * query string: franchiseId, distance
  */
 
-exports.eventToStore = async function (req, res) {
+export const eventToStore = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { franchiseId, distance } = req.query;
@@ -529,7 +490,7 @@ exports.eventToStore = async function (req, res) {
  * [GET] /users/my-eats/notice-list
  */
 
-exports.getNoticeList = async function (req, res) {
+export const getNoticeList = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   //Request Error Start
@@ -569,7 +530,7 @@ exports.getNoticeList = async function (req, res) {
  * path variable: noticeId
  */
 
-exports.getNotice = async function (req, res) {
+export const getNotice = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { noticeId } = req.params;
@@ -616,7 +577,7 @@ exports.getNotice = async function (req, res) {
  * API Name : 아이디 찾기 - 인증번호 전송 및 저장 API
  * [PATCH] /users/user-account/auth
  */
-exports.findEmail = async function (req, res) {
+export const findEmail = async function (req: any, res: any) {
   const { userName, phoneNum } = req.body;
 
   //Request Error Start
@@ -640,9 +601,9 @@ exports.findEmail = async function (req, res) {
 
   // Response Error End
 
-  const authNum = createAuthNum();
+  const authNum = ncpSens.createAuthNum();
 
-  messageAuth(1, phoneNum, authNum);
+  ncpSens.messageAuth(1, phoneNum, authNum);
 
   const result = await userService.updateAuthNumByPhoneNum(phoneNum, authNum);
 
@@ -654,7 +615,7 @@ exports.findEmail = async function (req, res) {
  * API Name : 아이디 찾기 - 인증번호 확인 및 이메일 제공 API
  * [GET] /users/user-account
  */
-exports.getEmail = async function (req, res) {
+export const getEmail = async function (req: any, res: any) {
   const { phoneNum, authNum } = req.query;
 
   //Request Error Start
@@ -691,7 +652,7 @@ exports.getEmail = async function (req, res) {
  * [PATCH] /users/user-password/auth
  * type: 1-휴대폰인증 / 2-이메일인증
  */
-exports.findPassword = async function (req, res) {
+export const findPassword = async function (req: any, res: any) {
   const { userName, email, type } = req.body;
 
   //Request Error Start
@@ -702,7 +663,7 @@ exports.findPassword = async function (req, res) {
 
   if (!type) return res.send(response(baseResponse.AUTH_TYPE_IS_EMPTY)); // 2079
 
-  if ((type != 1) & (type != 2))
+  if (type != 1 && type != 2)
     return res.send(response(baseResponse.AUTH_TYPE_IS_NOT_VALID)); // 2080
 
   //Request Error End
@@ -719,12 +680,12 @@ exports.findPassword = async function (req, res) {
 
   // Response Error End
 
-  const authNum = createAuthNum();
+  const authNum = ncpSens.createAuthNum();
 
   if (type === 1) {
     const phoneNum = await userProvider.selectPhoneNum(email);
 
-    messageAuth(2, phoneNum, authNum);
+    ncpSens.messageAuth(2, phoneNum, authNum);
   } else mailer(authNum, email);
 
   const result = await userService.updateAuthNumByEmail(email, authNum);
@@ -737,7 +698,7 @@ exports.findPassword = async function (req, res) {
  * API Name : 비밀번호 찾기 - 인증번호 확인 및 비밀번호 재설정 API
  * [PATCH] /users/user-password/reset
  */
-exports.updatePassword = async function (req, res) {
+export const updatePassword = async function (req: any, res: any) {
   const { authNum, password, checkPassword, email } = req.body;
 
   //Request Error Start
@@ -786,80 +747,80 @@ exports.updatePassword = async function (req, res) {
  * [POST] /users/kakao-login
  */
 
-// client start
-passport.use(
-  "kakao-login",
-  new KakaoStrategy(
-    {
-      clientID: kakao_key,
-      callbackURL: "/auth/kakao/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      console.log(accessToken);
-      console.log(profile);
-    }
-  )
-);
-// client end
+// // client start
+// passport.use(
+//   'kakao-login',
+//   new KakaoStrategy(
+//     {
+//       clientID: kakao_key,
+//       callbackURL: '/auth/kakao/callback',
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       console.log(accessToken);
+//       console.log(profile);
+//     }
+//   )
+// );
+// // client end
 
-exports.kakaoLogin = async function (req, res) {
-  const { accessToken } = req.body;
+// export const kakaoLogin = async function (req: any, res: any) {
+//   const { accessToken } = req.body;
 
-  if (!accessToken)
-    return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_EMPTY)); // 2084
+//   if (!accessToken)
+//     return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_EMPTY)); // 2084
 
-  try {
-    let kakao_profile;
+//   try {
+//     let kakao_profile;
 
-    try {
-      kakao_profile = await axios.get("https://kapi.kakao.com/v2/user/me", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (err) {
-      return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
-    }
+//     try {
+//       kakao_profile = await axios.get('https://kapi.kakao.com/v2/user/me', {
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//           'Content-Type': 'application/json',
+//         },
+//       });
+//     } catch (err) {
+//       return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
+//     }
 
-    const kakao_data = kakao_profile.data.kakao_account;
-    const kakao_name = kakao_data.profile.nickname;
-    const kakao_email = kakao_data.email;
+//     const kakao_data = kakao_profile.data.kakao_account;
+//     const kakao_name = kakao_data.profile.nickname;
+//     const kakao_email = kakao_data.email;
 
-    const checkEmailExist = await userProvider.checkEmailExist(kakao_email);
+//     const checkEmailExist = await userProvider.checkEmailExist(kakao_email);
 
-    if (checkEmailExist === 1) {
-      const selectUserId = await userProvider.selectUserId(kakao_email);
+//     if (checkEmailExist === 1) {
+//       const selectUserId = await userProvider.selectUserId(kakao_email);
 
-      let token = await jwt.sign(
-        {
-          userId: selectUserId,
-        },
-        secret_config.jwtsecret,
-        {
-          expiresIn: "365d",
-          subject: "userInfo",
-        }
-      );
-      return res.send(
-        response(baseResponse.SUCCESS, {
-          userId: selectUserId,
-          jwt: token,
-          message: "소셜로그인에 성공하셨습니다.",
-        })
-      );
-    } else {
-      const result = { name: kakao_name, email: kakao_email };
+//       const token = await jwt.sign(
+//         {
+//           userId: selectUserId,
+//         },
+//         secret_config,
+//         {
+//           expiresIn: '365d',
+//           subject: 'userInfo',
+//         }
+//       );
+//       return res.send(
+//         response(baseResponse.SUCCESS, {
+//           userId: selectUserId,
+//           jwt: token,
+//           message: '소셜로그인에 성공하셨습니다.',
+//         })
+//       );
+//     } else {
+//       const result = { name: kakao_name, email: kakao_email };
 
-      return res.send(
-        response(baseResponse.SUCCESS, {
-          message: "회원가입이 가능합니다.",
-          result,
-        })
-      );
-    }
-  } catch (err) {
-    res.send(errResponse(baseResponse.SUCCESS, err));
-    return errResponse(baseResponse.DB_ERROR);
-  }
-};
+//       return res.send(
+//         response(baseResponse.SUCCESS, {
+//           message: '회원가입이 가능합니다.',
+//           result,
+//         })
+//       );
+//     }
+//   } catch (err) {
+//     res.send(errResponse(baseResponse.SUCCESS, err));
+//     return errResponse(baseResponse.DB_ERROR);
+//   }
+// };
