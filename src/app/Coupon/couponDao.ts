@@ -1,16 +1,19 @@
 // 유저 존재 여부 확인
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 음식점 존재 여부 check
-async function checkStoreExist(connection, storeId) {
+export const checkStoreExist = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Store
@@ -20,24 +23,14 @@ async function checkStoreExist(connection, storeId) {
 
   const row = await connection.query(query, storeId);
 
-  return row[0][0]["exist"];
-}
-
-// // 음식점 삭제 여부 check
-// async function checkStoreDeleted(connection, storeId) {
-//   const query = `
-//                 select isDeleted
-//                 from Store
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, storeId);
-
-//   return row[0][0]["isDeleted"];
-// }
+  return row[0][0]['exist'];
+};
 
 // My 이츠에서 쿠폰 목록 조회
-async function selectMyEatsCoupons(connection, userId) {
+export const selectMyEatsCoupons = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
             select co.id as couponObtainedId, c.couponName,
                   concat(format(c.discount, 0), '원 할인') as discount,
@@ -58,10 +51,15 @@ async function selectMyEatsCoupons(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 카트에서 쿠폰 목록 조회
-async function selectCartCoupons(connection, userId, storeId, totalPrice) {
+export const selectCartCoupons = async function (
+  connection: any,
+  userId: number,
+  storeId: string,
+  totalPrice: string
+) {
   const query = `
             select co.id as couponObtainedId, c.couponName,
                   concat(format(c.discount, 0), '원 할인') as discount,
@@ -98,21 +96,27 @@ async function selectCartCoupons(connection, userId, storeId, totalPrice) {
   const row = await connection.query(query, [totalPrice, storeId, userId]);
 
   return row[0];
-}
+};
 
 // 쿠폰 존재 여부 check
-async function checkCouponExist(connection, number) {
+export const checkCouponExist = async function (
+  connection: any,
+  number: string
+) {
   const query = `
                 select exists(select id from Coupon where number = ?) as exist;
                 `;
 
   const row = await connection.query(query, number);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 쿠폰 만료 여부 check
-async function checkCouponAlive(connection, number) {
+export const checkCouponAlive = async function (
+  connection: any,
+  number: string
+) {
   const query = `
                 select status
                 from Coupon
@@ -121,11 +125,15 @@ async function checkCouponAlive(connection, number) {
 
   const row = await connection.query(query, number);
 
-  return row[0][0]["status"];
-}
+  return row[0][0]['status'];
+};
 
 // 쿠폰 소지 여부 check
-async function checkCouponObtained(connection, userId, number) {
+export const checkCouponObtained = async function (
+  connection: any,
+  userId: number,
+  number: string
+) {
   const query1 = `
                   select id
                   from Coupon
@@ -134,7 +142,7 @@ async function checkCouponObtained(connection, userId, number) {
 
   const row1 = await connection.query(query1, number);
 
-  const couponId = row1[0][0]["id"];
+  const couponId = row1[0][0]['id'];
 
   const query2 = `
                 select exists(select id
@@ -145,11 +153,15 @@ async function checkCouponObtained(connection, userId, number) {
 
   const row2 = await connection.query(query2, [userId, couponId]);
 
-  return row2[0][0]["exist"];
-}
+  return row2[0][0]['exist'];
+};
 
 // 쿠폰 등록
-async function createCoupons(connection, userId, number) {
+export const createCoupons = async function (
+  connection: any,
+  userId: number,
+  number: string
+) {
   const query1 = `
                   select id
                   from Coupon
@@ -158,7 +170,7 @@ async function createCoupons(connection, userId, number) {
 
   const row1 = await connection.query(query1, number);
 
-  const couponId = row1[0][0]["id"];
+  const couponId = row1[0][0]['id'];
 
   const query2 = `
                 insert into CouponObtained (userId, couponId)
@@ -168,10 +180,13 @@ async function createCoupons(connection, userId, number) {
   const row2 = await connection.query(query2, [userId, couponId]);
 
   return row2[0];
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -181,11 +196,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -195,18 +213,5 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
-
-module.exports = {
-  checkUserExist,
-  checkStoreExist,
-  selectMyEatsCoupons,
-  selectCartCoupons,
-  checkCouponExist,
-  checkCouponAlive,
-  checkCouponObtained,
-  createCoupons,
-  checkUserBlocked,
-  checkUserWithdrawn,
+  return row[0][0]['exist'];
 };

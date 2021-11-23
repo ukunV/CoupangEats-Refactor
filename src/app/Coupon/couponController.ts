@@ -1,15 +1,7 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const couponProvider = require("../../app/Coupon/couponProvider");
-const couponService = require("../../app/Coupon/couponService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
-
-const kakaoMap = require("../../../controllers/kakao_ctrl").getAddressInfo;
+import * as couponProvider from '../../app/Coupon/couponProvider';
+import * as couponService from '../../app/Coupon/couponService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
 // regular expression
 const regPrice = /^[0-9]/;
@@ -19,7 +11,7 @@ const regPrice = /^[0-9]/;
  * API Name : My 이츠에서 쿠폰 목록 조회 API
  * [GET] /coupons/my-eats/coupon-list
  */
-exports.getMyEatsCoupons = async function (req, res) {
+export const getMyEatsCoupons = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -58,7 +50,7 @@ exports.getMyEatsCoupons = async function (req, res) {
  * [GET] /coupons/cart/coupon-list
  * query string: storeId, totalPrice
  */
-exports.getCartCoupons = async function (req, res) {
+export const getCartCoupons = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { storeId, totalPrice } = req.query;
@@ -115,7 +107,7 @@ exports.getCartCoupons = async function (req, res) {
  * API Name : 쿠폰 등록 API
  * [POST] /coupons
  */
-exports.createCoupons = async function (req, res) {
+export const createCoupons = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { number } = req.body;
