@@ -1,16 +1,19 @@
 // 유저 존재 여부 check
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -20,11 +23,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -34,11 +40,15 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 결제수단 존재 여부 check
-async function checkPaymentExist(connection, userId, paymentId) {
+export const checkPaymentExist = async function (
+  connection: any,
+  userId: number,
+  paymentId: string
+) {
   const query = `
                 select exists(select id
                               from Payment
@@ -49,19 +59,19 @@ async function checkPaymentExist(connection, userId, paymentId) {
 
   const row = await connection.query(query, [userId, paymentId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 정보 생성
-async function createOrder(
-  connection,
-  userId,
-  storeId,
-  addressId,
-  paymentId,
-  deliveryFee,
-  discount,
-  finalPrice
+export const createOrder = async function (
+  connection: any,
+  userId: number,
+  storeId: number,
+  addressId: number,
+  paymentId: number,
+  deliveryFee: number,
+  discount: number,
+  finalPrice: number
 ) {
   const query = `
                 insert into OrderList (userId, storeId, addressId, paymentId, deliveryFee, discount, finalPrice)
@@ -79,10 +89,14 @@ async function createOrder(
   ]);
 
   return row[0];
-}
+};
 
 // 쿠폰 존재 여부 check
-async function checkCouponExist(connection, userId, couponObtainedId) {
+export const checkCouponExist = async function (
+  connection: any,
+  userId: number,
+  couponObtainedId: string
+) {
   const query = `
                 select exists(select id
                               from CouponObtained
@@ -93,11 +107,14 @@ async function checkCouponExist(connection, userId, couponObtainedId) {
 
   const row = await connection.query(query, [userId, couponObtainedId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 정보 생성 -> 쿠폰 상태 변경
-async function changeCouponStatus(connection, couponObtainedId) {
+export const changeCouponStatus = async function (
+  connection: any,
+  couponObtainedId: number
+) {
   const query = `
                 update CouponObtained
                 set status = 0
@@ -107,10 +124,14 @@ async function changeCouponStatus(connection, couponObtainedId) {
   const row = await connection.query(query, couponObtainedId);
 
   return row[0].info;
-}
+};
 
 // 주문 정보 생성 -> 카트 상태 변경
-async function changeCartStatus(connection, userId, rootIdArr) {
+export const changeCartStatus = async function (
+  connection: any,
+  userId: number,
+  rootIdArr: number[]
+) {
   const getOrderIdQuery = `
                           select max(id) as orderId
                           from OrderList
@@ -119,7 +140,7 @@ async function changeCartStatus(connection, userId, rootIdArr) {
 
   const getOrderIdRow = await connection.query(getOrderIdQuery, userId);
 
-  const orderId = getOrderIdRow[0][0]["orderId"];
+  const orderId = getOrderIdRow[0][0]['orderId'];
 
   let affectedRows = 0;
 
@@ -137,10 +158,13 @@ async function changeCartStatus(connection, userId, rootIdArr) {
   }
 
   return { affectedRows };
-}
+};
 
 // 주문내역 조회
-async function selectOrderList(connection, userId) {
+export const selectOrderList = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select ol.id as orderId, s.storeName, smi.imageURL,
                       case
@@ -178,10 +202,14 @@ async function selectOrderList(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 주문내역 존재 여부 check
-async function checkOrderExist(connection, userId, orderId) {
+export const checkOrderExist = async function (
+  connection: any,
+  userId: number,
+  orderId: string
+) {
   const query = `
                 select exists(select id
                               from OrderList
@@ -191,11 +219,14 @@ async function checkOrderExist(connection, userId, orderId) {
 
   const row = await connection.query(query, [userId, orderId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 영수증 조회
-async function selectOrderReceipt(connection, orderId) {
+export const selectOrderReceipt = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select s.storeName, date_format(ol.createdAt, '%Y-%m-%d %H:%m') as createdAt,
                       group_concat(case when c.rootId = c.menuId then concat(c.amount, '/', sm.menuName, '/', sm.price) else concat(sm.menuName, '/', sm.price) end order by c.rootId, c.menuId) as menuList,
@@ -230,10 +261,13 @@ async function selectOrderReceipt(connection, orderId) {
   const row = await connection.query(query, orderId);
 
   return row[0];
-}
+};
 
 // 배달 현황 조회
-async function getDeliveryStatus(connection, orderId) {
+export const getDeliveryStatus = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                 select ol.id as orderId, timestampdiff(minute, now(), date_add(ol.createdAt, interval 30 + 10 + s.deliveryTime minute)) as restTime,
                       date_format(date_add(ol.createdAt, interval 30 + 10 + s.deliveryTime minute), '%H:%i %p 도착예정') as arrival,
@@ -278,19 +312,4 @@ async function getDeliveryStatus(connection, orderId) {
   const row = await connection.query(query, orderId);
 
   return row[0];
-}
-
-module.exports = {
-  checkUserExist,
-  checkUserBlocked,
-  checkUserWithdrawn,
-  checkPaymentExist,
-  createOrder,
-  checkCouponExist,
-  changeCouponStatus,
-  changeCartStatus,
-  selectOrderList,
-  checkOrderExist,
-  selectOrderReceipt,
-  getDeliveryStatus,
 };

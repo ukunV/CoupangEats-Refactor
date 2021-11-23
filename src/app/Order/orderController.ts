@@ -1,15 +1,7 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const orderProvider = require("../../app/Order/orderProvider");
-const orderService = require("../../app/Order/orderService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const passport = require("passport");
-
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
+import * as orderProvider from '../../app/Order/orderProvider';
+import * as orderService from '../../app/Order/orderService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
 // regular expression
 const regPrice = /^[0-9]/;
@@ -19,7 +11,7 @@ const regPrice = /^[0-9]/;
  * API Name : 주문 정보 생성 API
  * [POST] /orders/order-detail
  */
-exports.createOrder = async function (req, res) {
+export const createOrder = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { storeId, addressId, paymentId, deliveryFee, discount, finalPrice } =
@@ -94,13 +86,13 @@ exports.createOrder = async function (req, res) {
  * [PATCH] /orders/order-detail/coupon
  * 사용한 쿠폰 없을 시 -> couponObtainedId: 0
  */
-exports.changeCouponStatus = async function (req, res) {
+export const changeCouponStatus = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { couponObtainedId } = req.body;
 
   if (couponObtainedId === 0) {
-    return res.send(response(baseResponse.SUCCESS, "사용한 쿠폰이 없습니다."));
+    return res.send(response(baseResponse.SUCCESS, '사용한 쿠폰이 없습니다.'));
   }
 
   // Request Error Start
@@ -150,7 +142,7 @@ exports.changeCouponStatus = async function (req, res) {
  * [PATCH] /orders/order-detail/cart
  * orderId, isDeleted 변경
  */
-exports.changeCartStatus = async function (req, res) {
+export const changeCartStatus = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { rootIdArr } = req.body;
@@ -190,7 +182,7 @@ exports.changeCartStatus = async function (req, res) {
  * API Name : 주문내역 조회 API
  * [GET] /orders/order-list
  */
-exports.getOrderList = async function (req, res) {
+export const getOrderList = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -229,7 +221,7 @@ exports.getOrderList = async function (req, res) {
  * [GET] /orders/order-receipt
  * query string: orderId
  */
-exports.getOrderReceipt = async function (req, res) {
+export const getOrderReceipt = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { orderId } = req.query;
@@ -277,7 +269,7 @@ exports.getOrderReceipt = async function (req, res) {
  * [GET] /orders/delivery-status
  * query string: orderId
  */
-exports.getDeliveryStatus = async function (req, res) {
+export const getDeliveryStatus = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { orderId } = req.query;
