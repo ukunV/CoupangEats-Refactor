@@ -1,16 +1,19 @@
 // 유저 존재 여부 check
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 음식점 존재 여부 check
-async function checkStoreExist(connection, storeId) {
+export const checkStoreExist = async function (
+  connection: any,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Store
@@ -20,24 +23,11 @@ async function checkStoreExist(connection, storeId) {
 
   const row = await connection.query(query, storeId);
 
-  return row[0][0]["exist"];
-}
-
-// // 음식점 삭제 여부 check
-// async function checkStoreDeleted(connection, storeId) {
-//   const query = `
-//                 select isDeleted
-//                 from Store
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, storeId);
-
-//   return row[0][0]["isDeleted"];
-// }
+  return row[0][0]['exist'];
+};
 
 // 메뉴 존재 여부 check
-async function checkMenuExist(connection, menuId) {
+export const checkMenuExist = async function (connection: any, menuId: string) {
   const query = `
                 select exists(select id
                               from StoreMenu
@@ -47,30 +37,17 @@ async function checkMenuExist(connection, menuId) {
 
   const row = await connection.query(query, menuId);
 
-  return row[0][0]["exist"];
-}
-
-// // 메뉴 삭제 여부 check
-// async function checkMenuDeleted(connection, menuId) {
-//   const query = `
-//                 select isDeleted
-//                 from StoreMenu
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, menuId);
-
-//   return row[0][0]["isDeleted"];
-// }
+  return row[0][0]['exist'];
+};
 
 // 카트에 담기
-async function createCart(
-  connection,
-  userId,
-  storeId,
-  menuId,
-  amount,
-  subIdArr
+export const createCart = async function (
+  connection: any,
+  userId: number,
+  storeId: string,
+  menuId: string,
+  amount: number,
+  subIdArr: number[]
 ) {
   const existCheckQuery = `
                           select rootId, menuId, createdAt
@@ -94,26 +71,28 @@ async function createCart(
   let count = existCheckRow[0].length;
   let i = 0;
   //////////////////////////////////////////////
+
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     if (count === 0) break;
 
     existMainId = 0;
     existSubArr = [];
 
-    existMainId = existCheckRow[0][i]["rootId"];
-    existCreatedAt = existCheckRow[0][i]["createdAt"];
+    existMainId = existCheckRow[0][i]['rootId'];
+    existCreatedAt = existCheckRow[0][i]['createdAt'];
     count -= 1;
     i += 1;
 
     for (i; i < existCheckRow[0].length; i++) {
-      if (existCheckRow[0][i]["rootId"] == existCheckRow[0][i]["menuId"]) {
+      if (existCheckRow[0][i]['rootId'] == existCheckRow[0][i]['menuId']) {
         break;
       }
-      existSubArr.push(existCheckRow[0][i]["menuId"]);
+      existSubArr.push(existCheckRow[0][i]['menuId']);
       count -= 1;
     }
 
-    if ((existMainId == menuId) & (existSubArr.length === subIdArr.length)) {
+    if (existMainId == menuId && existSubArr.length === subIdArr.length) {
       for (let i = 0; i < subIdArr.length; i++) {
         if (existSubArr[i] != subIdArr[i]) {
           same = 0;
@@ -181,10 +160,10 @@ async function createCart(
   }
 
   return { menuInsertResult: mainRow[0], subMenuInsertCount: insertCount };
-}
+};
 
 // 카트 상태 check
-async function checkCartExist(connection, userId) {
+export const checkCartExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id
                               from Cart
@@ -194,11 +173,15 @@ async function checkCartExist(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 같은 음식점의 메뉴 여부 check
-async function checkSameStore(connection, userId, storeId) {
+export const checkSameStore = async function (
+  connection: any,
+  userId: number,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Cart
@@ -209,24 +192,15 @@ async function checkSameStore(connection, userId, storeId) {
 
   const row = await connection.query(query, [userId, storeId]);
 
-  return row[0][0]["exist"];
-}
-
-// // 타 음식점 메뉴 카트에 담을 시 카트 항목 삭제
-// async function deleteOtherStore(connection, userId) {
-//   const query = `
-//                 update Cart
-//                 set isDeleted = 0
-//                 where userId = ?;
-//                 `;
-
-//   const row = await connection.query(query, userId);
-
-//   return row[0].info;
-// }
+  return row[0][0]['exist'];
+};
 
 // 카트에 다른 상점이 이미 있는지 check
-async function checkOtherStoreExist(connection, userId, storeId) {
+export const checkOtherStoreExist = async function (
+  connection: any,
+  userId: number,
+  storeId: string
+) {
   const query = `
                 select exists(select id
                               from Cart
@@ -237,11 +211,15 @@ async function checkOtherStoreExist(connection, userId, storeId) {
 
   const row = await connection.query(query, [userId, storeId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 카트에 메뉴 존재 여부 check
-async function checkMenuExistAtCart(connection, userId, rootId) {
+export const checkMenuExistAtCart = async function (
+  connection: any,
+  userId: number,
+  rootId: string
+) {
   const query = `
                 select exists(select id
                               from Cart
@@ -252,11 +230,16 @@ async function checkMenuExistAtCart(connection, userId, rootId) {
 
   const row = await connection.query(query, [userId, rootId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 메뉴 수량 변경
-async function changeMenuAmount(connection, userId, rootId, amount) {
+export const changeMenuAmount = async function (
+  connection: any,
+  userId: number,
+  rootId: number,
+  amount: number
+) {
   const query = `
                 update Cart
                 set amount = ?
@@ -267,10 +250,10 @@ async function changeMenuAmount(connection, userId, rootId, amount) {
   const row = await connection.query(query, [amount, userId, rootId]);
 
   return row[0].info;
-}
+};
 
 // 카트 비우기
-async function cleanUpCart(connection, userId) {
+export const cleanUpCart = async function (connection: any, userId: number) {
   const query = `
                 update Cart
                 set isDeleted = 0
@@ -280,10 +263,10 @@ async function cleanUpCart(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0].info;
-}
+};
 
 // 카트 조회
-async function selectCart(connection, userId) {
+export const selectCart = async function (connection: any, userId: number) {
   const query1 = `
                 select id as addressId,
                       case
@@ -343,10 +326,14 @@ async function selectCart(connection, userId) {
   const row3 = await connection.query(query3, userId);
 
   return { userInfo: row1[0], cartInfo: row2[0], paymentInfo: row3[0] };
-}
+};
 
 // 카트 배달비 조회
-async function selectCartDeliveryFee(connection, storeId, totalPrice) {
+export const selectCartDeliveryFee = async function (
+  connection: any,
+  storeId: string,
+  totalPrice: string
+) {
   const query = `
                 select price as deliveryFee
                 from StoreDeliveryPrice
@@ -363,10 +350,15 @@ async function selectCartDeliveryFee(connection, storeId, totalPrice) {
   if (row[0].length === 0) return null;
 
   return row[0];
-}
+};
 
 // 카트 최대 할인 쿠폰 조회
-async function selectCartCoupon(connection, userId, storeId, totalPrice) {
+export const selectCartCoupon = async function (
+  connection: any,
+  userId: number,
+  storeId: string,
+  totalPrice: string
+) {
   const query1 = `
                   select co.id as couponObtainedId, c.discount
                   from Coupon c
@@ -402,13 +394,17 @@ async function selectCartCoupon(connection, userId, storeId, totalPrice) {
                   where id = ?;
                   `;
 
-  await connection.query(query3, row1[0][0]["couponObtainedId"]);
+  await connection.query(query3, row1[0][0]['couponObtainedId']);
 
   return row1[0];
-}
+};
 
 // 쿠폰 획득 여부 check
-async function checkCouponObtainedExist(connection, userId, couponObtainedId) {
+export const checkCouponObtainedExist = async function (
+  connection: any,
+  userId: number,
+  couponObtainedId: string
+) {
   const query = `
                 select exists(select id
                               from CouponObtained
@@ -418,11 +414,14 @@ async function checkCouponObtainedExist(connection, userId, couponObtainedId) {
 
   const row = await connection.query(query, [userId, couponObtainedId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 카트에서 쿠폰 선택
-async function changeCoupon(connection, couponObtainedId) {
+export const changeCoupon = async function (
+  connection: any,
+  couponObtainedId: number
+) {
   const query = `
                   update CouponObtained
                   set isChecked = 1
@@ -432,10 +431,13 @@ async function changeCoupon(connection, couponObtainedId) {
   const row = await connection.query(query, couponObtainedId);
 
   return row[0].info;
-}
+};
 
 // 카트에서 쿠폰 변경
-async function selectCouponChoice(connection, userId) {
+export const selectCouponChoice = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select co.id as couponObtainedId, c.discount
                 from CouponObtained co
@@ -447,10 +449,13 @@ async function selectCouponChoice(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 카트에서 쿠폰 선택 제거
-async function deleteCouponChoice(connection, userId) {
+export const deleteCouponChoice = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                   update CouponObtained
                   set isChecked = 0
@@ -460,10 +465,13 @@ async function deleteCouponChoice(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0].info;
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -473,11 +481,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -487,11 +498,15 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 결제수단 존재 여부 check
-async function checkPaymentExist(connection, userId, paymentId) {
+export const checkPaymentExist = async function (
+  connection: any,
+  userId: number,
+  paymentId: string
+) {
   const query = `
                 select exists(select id
                               from Payment
@@ -502,11 +517,15 @@ async function checkPaymentExist(connection, userId, paymentId) {
 
   const row = await connection.query(query, [userId, paymentId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 카트에서 결제수단 변경
-async function changePayment(connection, userId, paymentId) {
+export const changePayment = async function (
+  connection: any,
+  userId: number,
+  paymentId: number
+) {
   const query1 = `
                 update Payment
                 set isChecked = 0
@@ -524,9 +543,14 @@ async function changePayment(connection, userId, paymentId) {
   const row2 = await connection.query(query2, paymentId);
 
   return row2[0].info;
-}
+};
 // 카트에서 특정 메뉴 삭제
-async function deleteCartMenu(connection, userId, menuId, createdAt) {
+export const deleteCartMenu = async function (
+  connection: any,
+  userId: number,
+  menuId: number,
+  createdAt: string
+) {
   const query = `
                 update Cart
                 set isDeleted = 0
@@ -538,29 +562,4 @@ async function deleteCartMenu(connection, userId, menuId, createdAt) {
   const row = await connection.query(query, [userId, menuId, createdAt]);
 
   return row[0].info;
-}
-
-module.exports = {
-  checkUserExist,
-  checkStoreExist,
-  checkMenuExist,
-  createCart,
-  checkCartExist,
-  checkSameStore,
-  checkOtherStoreExist,
-  checkMenuExistAtCart,
-  changeMenuAmount,
-  cleanUpCart,
-  selectCart,
-  selectCartDeliveryFee,
-  selectCartCoupon,
-  checkCouponObtainedExist,
-  changeCoupon,
-  selectCouponChoice,
-  deleteCouponChoice,
-  checkUserBlocked,
-  checkUserWithdrawn,
-  checkPaymentExist,
-  changePayment,
-  deleteCartMenu,
 };

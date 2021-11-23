@@ -1,15 +1,7 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const cartProvider = require("../../app/Cart/cartProvider");
-const cartService = require("../../app/Cart/cartService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const passport = require("passport");
-
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
+import * as cartProvider from '../../app/Cart/cartProvider';
+import * as cartService from '../../app/Cart/cartService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
 // regular expression
 const regAmount = /^[0-9]/;
@@ -21,7 +13,7 @@ const regPrice = /^[0-9]/;
  * [POST] /carts/:storeId/menu
  * query string: menuId
  */
-exports.createCarts = async function (req, res) {
+export const createCarts = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { storeId } = req.params;
@@ -36,7 +28,7 @@ exports.createCarts = async function (req, res) {
 
   if (!amount) return res.send(errResponse(baseResponse.AMOUNT_IS_EMPTY)); // 2023
 
-  if (!regAmount.test(amount) | (amount < 1) | (amount > 100))
+  if (!regAmount.test(amount) || amount < 1 || amount > 100)
     return res.send(errResponse(baseResponse.AMOUNT_IS_NOT_VALID)); // 2024
 
   // Request Error End
@@ -96,67 +88,12 @@ exports.createCarts = async function (req, res) {
   return res.send(response(baseResponse.SUCCESS, result));
 };
 
-// /**
-//  * API No. 20
-//  * API Name : 타 음식점 메뉴 카트에 담을 시 카트 항목 삭제 API
-//  * [PATCH] /carts/:storeId/menu
-//  */
-// exports.deleteOtherStore = async function (req, res) {
-//   const { userId } = req.verifiedToken;
-
-//   const { storeId } = req.params;
-
-//   // Request Error Start
-
-//   if (!userId) return res.send(errResponse(baseResponse.USER_ID_IS_EMPTY)); // 2010
-
-//   // Request Error End
-
-//   // Response Error Start
-
-//   const checkUserExist = await cartProvider.checkUserExist(userId);
-
-//   if (checkUserExist === 0)
-//     return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
-
-//   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
-
-//   if (checkUserBlocked === 1)
-//     return res.send(errResponse(baseResponse.ACCOUNT_IS_BLOCKED)); // 3998
-
-//   const checkUserWithdrawn = await cartProvider.checkUserWithdrawn(userId);
-
-//   if (checkUserWithdrawn === 1)
-//     return res.send(errResponse(baseResponse.ACCOUNT_IS_WITHDRAWN)); // 3999
-
-//   const checkStoreExist = await cartProvider.checkStoreExist(storeId);
-
-//   if (checkStoreExist === 0)
-//     return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
-
-//   const checkCartExist = await cartProvider.checkCartExist(userId);
-
-//   if (checkCartExist === 0)
-//     return res.send(response(baseResponse.CART_IS_EMPTY)); // 3013
-
-//   const checkSameStore = await cartProvider.checkSameStore(userId, storeId);
-
-//   if (checkSameStore === 1)
-//     return res.send(response(baseResponse.SAME_STORE_MENU)); // 3014
-
-//   // Response Error End
-
-//   const result = await cartService.deleteOtherStore(userId);
-
-//   return res.send(response(baseResponse.SUCCESS, result));
-// };
-
 /**
  * API No. 46
  * API Name : 메뉴 수량 변경 API
  * [PATCH] /carts/amount
  */
-exports.changeMenuAmount = async function (req, res) {
+export const changeMenuAmount = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { rootId, amount } = req.body;
@@ -211,7 +148,7 @@ exports.changeMenuAmount = async function (req, res) {
  * API Name : 카트 비우기 API
  * [PATCH] /carts/clean-up
  */
-exports.cleanUpCart = async function (req, res) {
+export const cleanUpCart = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -249,7 +186,7 @@ exports.cleanUpCart = async function (req, res) {
  * API Name : 카트 조회 API
  * [GET] /carts/detail
  */
-exports.getCart = async function (req, res) {
+export const getCart = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -288,7 +225,7 @@ exports.getCart = async function (req, res) {
  * [GET] /carts/detail/delivery-fee
  * query string: storeId, totalPrice
  */
-exports.getCartDeliveryFee = async function (req, res) {
+export const getCartDeliveryFee = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { storeId, totalPrice } = req.query;
@@ -342,7 +279,7 @@ exports.getCartDeliveryFee = async function (req, res) {
  * [GET] /carts/detail/coupon
  * query string: storeId, totalPrice
  */
-exports.getCartCoupon = async function (req, res) {
+export const getCartCoupon = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { storeId, totalPrice } = req.query;
@@ -399,7 +336,7 @@ exports.getCartCoupon = async function (req, res) {
  * API Name : 카트에서 쿠폰 선택 API
  * [PATCH] /carts/detail/coupon-choice
  */
-exports.changeCoupon = async function (req, res) {
+export const changeCoupon = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { couponObtainedId } = req.body;
@@ -450,7 +387,7 @@ exports.changeCoupon = async function (req, res) {
  * API Name : 카트에서 선택한 쿠폰 조회 API
  * [GET] /carts/detail/coupon-choice
  */
-exports.getCouponChoice = async function (req, res) {
+export const getCouponChoice = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -488,7 +425,7 @@ exports.getCouponChoice = async function (req, res) {
  * API Name : 카트에서 쿠폰 선택 제거 API
  * [PATCH] /carts/detail/coupon
  */
-exports.deleteCouponChoice = async function (req, res) {
+export const deleteCouponChoice = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -526,7 +463,7 @@ exports.deleteCouponChoice = async function (req, res) {
  * API Name : 카트에서 결제수단 변경 API
  * [PATCH] /carts/detail/payment-choice
  */
-exports.changePayment = async function (req, res) {
+export const changePayment = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { paymentId } = req.body;
@@ -577,7 +514,7 @@ exports.changePayment = async function (req, res) {
  * API Name : 카트에서 특정 메뉴 삭제 API
  * [PATCH] /carts/menu
  */
-exports.deleteCartMenu = async function (req, res) {
+export const deleteCartMenu = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { menuId, createdAt } = req.body;
