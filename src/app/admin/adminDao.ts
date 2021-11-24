@@ -1,5 +1,8 @@
 // 주문 배달완료 여부 check
-async function checkOrderAlive(connection, orderId) {
+export const checkOrderAlive = async function (
+  connection: any,
+  orderId: string
+) {
   const query = `
                   select exists(select id
                                 from OrderList
@@ -10,11 +13,15 @@ async function checkOrderAlive(connection, orderId) {
 
   const row = await connection.query(query, orderId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 상태 check (status = 1)
-async function checkOrderStatus(connection, orderId, status) {
+export const checkOrderStatus = async function (
+  connection: any,
+  orderId: string,
+  status: string
+) {
   const query = `
                   select exists(select id
                                 from OrderList
@@ -24,11 +31,15 @@ async function checkOrderStatus(connection, orderId, status) {
 
   const row = await connection.query(query, [orderId, status]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주문 상태 변경(주문 수락됨)
-async function updateOrderStatus(connection, orderId, status) {
+export const updateOrderStatus = async function (
+  connection: any,
+  orderId: number,
+  status: number
+) {
   const query = `
                   update OrderList
                   set status = ?
@@ -38,10 +49,14 @@ async function updateOrderStatus(connection, orderId, status) {
   const row = await connection.query(query, [status, orderId]);
 
   return row[0].info;
-}
+};
 
 // 주문 존재 여부 check
-async function checkOrderExist(connection, storeId, orderId) {
+export const checkOrderExist = async function (
+  connection: any,
+  storeId: string,
+  orderId: string
+) {
   const query = `
                   select exists(select id
                                 from OrderList
@@ -51,11 +66,15 @@ async function checkOrderExist(connection, storeId, orderId) {
 
   const row = await connection.query(query, [storeId, orderId]);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 라이더 위치 초기 세팅
-async function createRider(connection, storeId, orderId) {
+export const createRider = async function (
+  connection: any,
+  storeId: number,
+  orderId: number
+) {
   const query1 = `
                   select storeLatitude, storeLongtitude
                   from Store
@@ -64,8 +83,8 @@ async function createRider(connection, storeId, orderId) {
 
   const row1 = await connection.query(query1, storeId);
 
-  const riderLat = row1[0][0]["storeLatitude"];
-  const riderLng = row1[0][0]["storeLongtitude"];
+  const riderLat = row1[0][0]['storeLatitude'];
+  const riderLng = row1[0][0]['storeLongtitude'];
 
   const query2 = `
                   insert into RiderLocation (orderId, riderLatitude, riderLongtitude)
@@ -75,10 +94,15 @@ async function createRider(connection, storeId, orderId) {
   const row2 = await connection.query(query2, [orderId, riderLat, riderLng]);
 
   return row2[0];
-}
+};
 
 // 라이더 위치 갱신
-async function updateRider(connection, orderId, lat, lng) {
+export const updateRider = async function (
+  connection: any,
+  orderId: number,
+  lat: string,
+  lng: string
+) {
   const query = `
                   update RiderLocation
                   set riderLatitude = ?, riderLongtitude = ?
@@ -88,13 +112,4 @@ async function updateRider(connection, orderId, lat, lng) {
   const row = await connection.query(query, [lat, lng, orderId]);
 
   return row[0].info;
-}
-
-module.exports = {
-  checkOrderAlive,
-  checkOrderStatus,
-  updateOrderStatus,
-  checkOrderExist,
-  createRider,
-  updateRider,
 };
