@@ -1,26 +1,26 @@
 // 유저 존재 여부 확인
-async function checkUserExist(connection, userId) {
+export const checkUserExist = async function (connection: any, userId: number) {
   const query = `
                 select exists(select id from User where id = ?) as exist;
                 `;
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주소 추가
-async function insertAddress(
-  connection,
-  userId,
-  type,
-  nickname,
-  buildingName,
-  address,
-  detailAddress,
-  information,
-  lat,
-  lng
+export const insertAddress = async function (
+  connection: any,
+  userId: number,
+  type: number,
+  nickname: string,
+  buildingName: string,
+  address: string,
+  detailAddress: string,
+  information: string,
+  lat: string,
+  lng: string
 ) {
   const query1 = `
                   update Address
@@ -30,8 +30,8 @@ async function insertAddress(
 
   const row1 = await connection.query(query1, userId);
 
-  let row2 = "";
-  let row3 = "";
+  let row2 = '';
+  let row3 = '';
 
   if (type === 1) {
     const query2 = `
@@ -41,8 +41,7 @@ async function insertAddress(
                       and userId = ?;
                       `;
 
-    row2 = await connection.query(query2, userId);
-    row2 = row2[0].info;
+    row2 = await connection.query(query2, userId)[0].info;
   } else if (type === 2) {
     const query3 = `
                       update Address
@@ -51,8 +50,7 @@ async function insertAddress(
                       and userId = ?;
                       `;
 
-    row3 = await connection.query(query3, userId);
-    row3 = row3[0].info;
+    row3 = await connection.query(query3, userId)[0].info;
   }
 
   const query4 = `
@@ -89,10 +87,13 @@ async function insertAddress(
     userLocation: row4[0].info,
     insertedAddress: row5[0],
   };
-}
+};
 
 // 주소 존재 여부 확인
-async function checkAddressExist(connection, addressId) {
+export const checkAddressExist = async function (
+  connection: any,
+  addressId: string
+) {
   const query = `
                 select exists(select id
                               from Address
@@ -102,25 +103,25 @@ async function checkAddressExist(connection, addressId) {
 
   const row = await connection.query(query, addressId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 주소 수정
-async function updateAddress(
-  connection,
-  userId,
-  type,
-  nickname,
-  buildingName,
-  address,
-  detailAddress,
-  information,
-  lat,
-  lng,
-  addressId
+export const updateAddress = async function (
+  connection: any,
+  userId: number,
+  type: number,
+  nickname: string,
+  buildingName: string,
+  address: string,
+  detailAddress: string,
+  information: string,
+  lat: string,
+  lng: string,
+  addressId: string
 ) {
-  let row1 = "";
-  let row2 = "";
+  let row1 = '';
+  let row2 = '';
 
   if (type === 1) {
     const query1 = `
@@ -130,8 +131,7 @@ async function updateAddress(
                       and userId = ?;
                       `;
 
-    row1 = await connection.query(query1, userId);
-    row1 = row1[0].info;
+    row1 = await connection.query(query1, userId)[0].info;
   } else if (type === 2) {
     const query2 = `
                       update Address
@@ -140,8 +140,7 @@ async function updateAddress(
                       and userId = ?;
                       `;
 
-    row2 = await connection.query(query2, userId);
-    row2 = row2[0].info;
+    row2 = await connection.query(query2, userId)[0].info;
   }
 
   const query3 = `
@@ -164,10 +163,13 @@ async function updateAddress(
   ]);
 
   return { type1: row1, type2: row2, modifiedAddress: row3[0].info };
-}
+};
 
 // 주소 삭제
-async function deleteAddress(connection, addressId) {
+export const deleteAddress = async function (
+  connection: any,
+  addressId: string
+) {
   const query = `
                 update Address
                 set isDeleted = 0, type = 3, isChecked = 0
@@ -177,10 +179,10 @@ async function deleteAddress(connection, addressId) {
   const row = await connection.query(query, addressId);
 
   return row[0].info;
-}
+};
 
 // 주소 목록 조회
-async function selectAddress(connection, userId) {
+export const selectAddress = async function (connection: any, userId: number) {
   const query = `
                 select id as addressId,
                       case
@@ -204,10 +206,14 @@ async function selectAddress(connection, userId) {
   const row = await connection.query(query, userId);
 
   return row[0];
-}
+};
 
 // 집/회사 주소 존재 여부 확인
-async function checkHouseCompany(connection, userId, type) {
+export const checkHouseCompany = async function (
+  connection: any,
+  userId: number,
+  type: number
+) {
   const query = `
                 select exists(select id
                               from Address
@@ -218,24 +224,17 @@ async function checkHouseCompany(connection, userId, type) {
 
   const row = await connection.query(query, [userId, type]);
 
-  return row[0][0]["exist"];
-}
-
-// // 주소 삭제 여부 확인
-// async function checkAddressDeleted(connection, addressId) {
-//   const query = `
-//                 select isDeleted
-//                 from Address
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, addressId);
-
-//   return row[0][0]["isDeleted"];
-// }
+  return row[0][0]['exist'];
+};
 
 // 주소 목록에서 주소 선택
-async function updateLocation(connection, addressId, userId, lat, lng) {
+export const updateLocation = async function (
+  connection: any,
+  addressId: number,
+  userId: number,
+  lat: string,
+  lng: string
+) {
   const query1 = `
                   update Address
                   set isChecked = 0
@@ -265,10 +264,13 @@ async function updateLocation(connection, addressId, userId, lat, lng) {
     makeChecked_1: row2[0].info,
     userLocation: row3[0].info,
   };
-}
+};
 
 // 계정 정지 여부 확인
-async function checkUserBlocked(connection, userId) {
+export const checkUserBlocked = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -278,11 +280,14 @@ async function checkUserBlocked(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
+  return row[0][0]['exist'];
+};
 
 // 계정 탈퇴 여부 확인
-async function checkUserWithdrawn(connection, userId) {
+export const checkUserWithdrawn = async function (
+  connection: any,
+  userId: number
+) {
   const query = `
                 select exists(select id
                               from User
@@ -292,18 +297,5 @@ async function checkUserWithdrawn(connection, userId) {
 
   const row = await connection.query(query, userId);
 
-  return row[0][0]["exist"];
-}
-
-module.exports = {
-  checkUserExist,
-  insertAddress,
-  checkAddressExist,
-  updateAddress,
-  deleteAddress,
-  selectAddress,
-  checkHouseCompany,
-  updateLocation,
-  checkUserBlocked,
-  checkUserWithdrawn,
+  return row[0][0]['exist'];
 };

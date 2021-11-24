@@ -1,22 +1,16 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const addressProvider = require("../../app/Address/addressProvider");
-const addressService = require("../../app/Address/addressService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const { response, errResponse } = require("../../../config/response");
-const secret_config = require("../../../config/secret");
-const jwt = require("jsonwebtoken");
+import * as addressProvider from '../../app/Address/addressProvider';
+import * as addressService from '../../app/Address/addressService';
+import * as baseResponse from '../../../config/baseResponseStatus';
+import { response, errResponse } from '../../../config/response';
 
-const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
-
-const kakaoMap = require("../../../controllers/kakao_ctrl").getAddressInfo;
+import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';
 
 /**
  * API No. 5
  * API Name : 주소 추가 API (추가와 동시에 사용자 위치 변경)
  * [POST] /addresses
  */
-exports.createAddresses = async function (req, res) {
+export const createAddresses = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { type, nickname, buildingName, address, detailAddress, information } =
@@ -30,11 +24,11 @@ exports.createAddresses = async function (req, res) {
 
   if (!address) return res.send(errResponse(baseResponse.ADDRESS_IS_EMPTY)); // 2015
 
-  if (location.length) {
+  if (typeof location === 'string') {
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
   }
 
-  if ((type != 1) & (type != 2) & (type != 3))
+  if (type != 1 && type != 2 && type != 3)
     return res.send(errResponse(baseResponse.TYPE_IS_NOT_VALID)); // 2021
 
   // Request Error End
@@ -78,7 +72,7 @@ exports.createAddresses = async function (req, res) {
  * API Name : 주소 수정 API
  * [PATCH] /addresses/:addressId/detail
  */
-exports.modifyAddresses = async function (req, res) {
+export const modifyAddresses = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { addressId } = req.params;
@@ -94,14 +88,14 @@ exports.modifyAddresses = async function (req, res) {
 
   if (!address) return res.send(errResponse(baseResponse.ADDRESS_IS_EMPTY)); // 2015
 
-  if (location.length) {
+  if (typeof location === 'string') {
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
   }
 
   if (!addressId)
     return res.send(errResponse(baseResponse.ADDRESS_ID_IS_EMPTY)); // 2022
 
-  if ((type != 1) & (type != 2) & (type != 3))
+  if (type != 1 && type != 2 && type != 3)
     return res.send(errResponse(baseResponse.TYPE_IS_NOT_VALID)); // 2021
 
   // Request Error End
@@ -128,13 +122,6 @@ exports.modifyAddresses = async function (req, res) {
   if (checkAddressExist === 0)
     return res.send(errResponse(baseResponse.ADDRESS_IS_NOT_EXIST)); // 3007
 
-  const checkAddressDeleted = await addressProvider.checkAddressDeleted(
-    addressId
-  );
-
-  if (checkAddressDeleted === 0)
-    return res.send(errResponse(baseResponse.ADDRESS_IS_DELETED)); // 3009
-
   // Response Error End
 
   const result = await addressService.updateAddress(
@@ -158,7 +145,7 @@ exports.modifyAddresses = async function (req, res) {
  * API Name : 주소 삭제 API
  * [PATCH] /addresses/:addressId/status
  */
-exports.deleteAddresses = async function (req, res) {
+export const deleteAddresses = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { addressId } = req.params;
@@ -206,7 +193,7 @@ exports.deleteAddresses = async function (req, res) {
  * API Name : 주소 목록 조회 API
  * [GET] /addresses
  */
-exports.selectAddresses = async function (req, res) {
+export const selectAddresses = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   // Request Error Start
@@ -244,7 +231,7 @@ exports.selectAddresses = async function (req, res) {
  * API Name : 집/회사 주소 존재 여부 확인 API
  * [GET] /addresses/:type/house-company
  */
-exports.checkHouseCompany = async function (req, res) {
+export const checkHouseCompany = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { type } = req.params;
@@ -253,7 +240,7 @@ exports.checkHouseCompany = async function (req, res) {
 
   if (!userId) return res.send(errResponse(baseResponse.USER_ID_IS_EMPTY)); // 2010
 
-  if ((type != 1) & (type != 2))
+  if (type != 1 && type != 2)
     return res.send(errResponse(baseResponse.TYPE_IS_NOT_VALID)); // 2021
 
   // Request Error End
@@ -287,7 +274,7 @@ exports.checkHouseCompany = async function (req, res) {
  * API Name : 주소 목록에서 주소 선택 API
  * [PATCH] /addresses/user-address
  */
-exports.changeLocation = async function (req, res) {
+export const changeLocation = async function (req: any, res: any) {
   const { userId } = req.verifiedToken;
 
   const { addressId, address } = req.body;
@@ -300,7 +287,7 @@ exports.changeLocation = async function (req, res) {
 
   if (!address) return res.send(errResponse(baseResponse.ADDRESS_IS_EMPTY)); // 2015
 
-  if (location.length) {
+  if (typeof location === 'string') {
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
   }
 
