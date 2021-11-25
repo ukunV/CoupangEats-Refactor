@@ -32,7 +32,6 @@ export const checkPhoneNumExist = async function (
 export const createUser = async function (
   connection: any,
   email: string,
-  salt: string,
   hashedPassword: string,
   name: string,
   phoneNum: string,
@@ -40,15 +39,14 @@ export const createUser = async function (
   lng: string
 ) {
   const query = `
-                insert into User(email, salt, password, name,
+                insert into User(email, password, name,
                                 phoneNum, userLatitude, userLongtitude)
-                values (?, ?, ?, ?, ?, ?, ?);
+                values (?, ?, ?, ?, ?, ?);
                 `;
 
   const row = await connection.query(
     query,
     email,
-    salt,
     hashedPassword,
     name,
     phoneNum,
@@ -59,34 +57,20 @@ export const createUser = async function (
   return row[0];
 };
 
-// salt값 가져오기
-export const getSalt = async function (connection: any, email: string) {
+// 비밀번호 확인
+export const selecthashedPassword = async function (
+  connection: any,
+  email: string
+) {
   const query = `
-                select salt
+                select hashedPassword
                 from User
                 where email = ?;
                 `;
 
   const row = await connection.query(query, email);
 
-  return row[0][0]['salt'];
-};
-
-// 비밀번호 확인
-export const checkPassword = async function (
-  connection: any,
-  email: string,
-  hashedPassword: string
-) {
-  const query = `
-                select ifnull(id, 0) as id
-                from User
-                where email = ? and password = ?;
-                `;
-
-  const row = await connection.query(query, email, hashedPassword);
-
-  return row[0][0]['id'];
+  return row[0][0]['hashedPassword'];
 };
 
 // 유저 존재 여부 확인
@@ -101,19 +85,6 @@ export const checkUserExist = async function (connection: any, userId: number) {
 
   return row[0][0]['exist'];
 };
-
-// // 유저 주소 변경
-// async function updateAddress(connection: any, params) {
-//   const query = `
-//                 update User
-//                 set userLatitude = ?, userLongtitude = ?
-//                 where id = ?;
-//                 `;
-
-//   const row = await connection.query(query, params);
-
-//   return row[0].info;
-// }
 
 // 홈 화면 조회 by userId
 export const selectHomeByUserId = async function (
@@ -875,16 +846,15 @@ export const checkAuthNumByEmail = async function (
 export const updatePassword = async function (
   connection: any,
   hashedPassword: string,
-  salt: string,
   email: string
 ) {
   const query = `
                 update User
-                set password = ?, salt = ?
+                set password = ?
                 where email = ?;
                 `;
 
-  const row = await connection.query(query, [hashedPassword, salt, email]);
+  const row = await connection.query(query, hashedPassword, email);
 
   return row[0].info;
 };

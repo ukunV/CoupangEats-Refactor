@@ -2,7 +2,7 @@ import * as userProvider from '../../app/User/userProvider';
 import * as userService from '../../app/User/userService';
 import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
-import { jwt_secret as secret_config } from '../../../config/secret';
+import { jwt_secret } from '../../../config/secret';
 import * as jwt from 'jsonwebtoken';
 // import axios from 'axios';
 // import * as passport from 'passport';
@@ -105,13 +105,10 @@ export const createUsers = async function (req: any, res: any) {
   // Response Error End
 
   // 비밀번호 암호화
-  const { hashedPassword, salt } = await user_ctrl.createHashedPassword(
-    password
-  );
+  const hashedPassword = await user_ctrl.createHashedPassword(password);
 
   const result = await userService.createUser(
     email,
-    salt,
     hashedPassword,
     name,
     phoneNum,
@@ -123,7 +120,7 @@ export const createUsers = async function (req: any, res: any) {
     {
       userId: result.insertId,
     }, // 토큰의 내용(payload)
-    secret_config, // 비밀키
+    jwt_secret.jwtsecret, // 비밀키
     {
       expiresIn: '365d',
       subject: 'userInfo',
@@ -179,9 +176,9 @@ export const userLogIn = async function (req: any, res: any) {
   if (checkEmailWithdrawn === 1)
     return res.send(errResponse(baseResponse.ACCOUNT_IS_WITHDRAWN)); // 3999
 
-  const checkPassword = await userProvider.checkPassword(email, password);
+  const hashedPassword = await userProvider.selecthashedPassword(email);
 
-  if (checkPassword === -1)
+  if (!user_ctrl.checkPassword(password, hashedPassword))
     return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG)); // 3004
 
   // Response Error End
@@ -192,7 +189,7 @@ export const userLogIn = async function (req: any, res: any) {
     {
       userId: selectUserId,
     }, // 토큰의 내용(payload)
-    secret_config, // 비밀키
+    jwt_secret.jwtsecret, // 비밀키
     {
       expiresIn: '365d',
       subject: 'userInfo',
@@ -200,7 +197,7 @@ export const userLogIn = async function (req: any, res: any) {
   );
 
   return res.send(
-    response(baseResponse.SUCCESS, { userId: checkPassword, jwt: token })
+    response(baseResponse.SUCCESS, { userId: selectUserId, jwt: token })
   );
 };
 
@@ -737,11 +734,9 @@ export const updatePassword = async function (req: any, res: any) {
 
   // Response Error End
 
-  const { hashedPassword, salt } = await user_ctrl.createHashedPassword(
-    password
-  );
+  const hashedPassword = await user_ctrl.createHashedPassword(password);
 
-  const result = await userService.updatePassword(hashedPassword, salt, email);
+  const result = await userService.updatePassword(hashedPassword, email);
 
   return res.send(response(baseResponse.SUCCESS, result));
 };

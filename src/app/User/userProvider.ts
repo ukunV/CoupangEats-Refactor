@@ -26,21 +26,12 @@ export const checkPhoneNumExist = async function (phoneNum: string) {
   return result;
 };
 
-// 비밀번호 확인
-export const checkPassword = async function (email: string, password: string) {
-  const salt = await connect_provider(
-    userDao.getSalt,
-    'User-checkPassword Provider',
-    email
-  );
-
-  const hashedPassword = await user_ctrl.makePasswordHashed(salt, password);
-
+// hashedPassword 가져오기
+export const selecthashedPassword = async function (email: string) {
   const result = await connect_provider(
-    userDao.checkPassword,
-    'User-checkPassword Provider',
-    email,
-    hashedPassword
+    userDao.selecthashedPassword,
+    'User-selecthashedPassword Provider',
+    email
   );
 
   return result;

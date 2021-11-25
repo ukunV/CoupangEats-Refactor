@@ -6,7 +6,6 @@ import { connect_service } from '../../../controllers/mysql';
 // 유저 회원가입
 export const createUser = async function (
   email: string,
-  salt: string,
   hashedPassword: string,
   name: string,
   phoneNum: string,
@@ -17,7 +16,6 @@ export const createUser = async function (
     userDao.createUser,
     'User-createUser Service',
     email,
-    salt,
     hashedPassword,
     name,
     phoneNum,
@@ -61,14 +59,12 @@ export const updateAuthNumByEmail = async function (
 // 비밀번호 찾기 - 인증번호 확인 및 비밀번호 재설정
 export const updatePassword = async function (
   hashedPassword: string,
-  salt: string,
   email: string
 ) {
   const result = await connect_service(
     userDao.updatePassword,
     'User-updatePassword Service',
     hashedPassword,
-    salt,
     email
   );
 
