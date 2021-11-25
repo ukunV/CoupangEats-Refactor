@@ -1,6 +1,6 @@
 import * as reviewProvider from '../../app/Review/reviewProvider';
 import * as reviewService from '../../app/Review/reviewService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 // regular expression
@@ -28,7 +28,7 @@ export const getPhotoReviews = async function (req: any, res: any) {
   const checkStoreExist = await reviewProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -62,15 +62,15 @@ export const getReviewList = async function (req: any, res: any) {
   if (filter != 1 && filter != 2 && filter != 3 && filter != 4 && filter != '')
     return res.send(errResponse(baseResponse.FILTER_IS_NOT_VALID)); // 2028
 
-  if (!page) return res.send(response(baseResponse.PAGE_IS_EMPTY)); // 2017
+  if (!page) return res.send(errResponse(baseResponse.PAGE_IS_EMPTY)); // 2017
 
   if (!regPage.test(page))
-    return res.send(response(baseResponse.PAGE_IS_NOT_VALID)); // 2018
+    return res.send(errResponse(baseResponse.PAGE_IS_NOT_VALID)); // 2018
 
-  if (!size) return res.send(response(baseResponse.SIZE_IS_EMPTY)); // 2019
+  if (!size) return res.send(errResponse(baseResponse.SIZE_IS_EMPTY)); // 2019
 
   if (!regSize.test(size))
-    return res.send(response(baseResponse.SIZE_IS_NOT_VALID)); // 2020
+    return res.send(errResponse(baseResponse.SIZE_IS_NOT_VALID)); // 2020
 
   // Request Error End
 
@@ -81,7 +81,7 @@ export const getReviewList = async function (req: any, res: any) {
   const checkStoreExist = await reviewProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -155,23 +155,23 @@ export const createReview = async function (req: any, res: any) {
   const checkUsersOrder = await reviewProvider.checkUsersOrder(userId, orderId);
 
   if (checkUsersOrder === 0)
-    return res.send(response(baseResponse.ORDER_IS_NOT_USERS)); // 3030
+    return res.send(errResponse(baseResponse.ORDER_IS_NOT_USERS)); // 3030
 
   const checkOrderExist = await reviewProvider.checkOrderExist(orderId);
 
   if (checkOrderExist === 0)
-    return res.send(response(baseResponse.ORDER_IS_NOT_EXIST)); // 3027
+    return res.send(errResponse(baseResponse.ORDER_IS_NOT_EXIST)); // 3027
 
   const checkOrderDeleted = await reviewProvider.checkOrderDeleted(orderId);
 
   if (checkOrderDeleted === 0)
-    return res.send(response(baseResponse.ORDER_IS_DELETED)); // 3028
+    return res.send(errResponse(baseResponse.ORDER_IS_DELETED)); // 3028
 
   const checkReviewExistByOrderId =
     await reviewProvider.checkReviewExistByOrderId(orderId);
 
   if (checkReviewExistByOrderId === 1)
-    return res.send(response(baseResponse.REVIEW_ALREADY_EXIST)); // 3029
+    return res.send(errResponse(baseResponse.REVIEW_ALREADY_EXIST)); // 3029
 
   // Response Error End
 
@@ -233,7 +233,7 @@ export const deleteReview = async function (req: any, res: any) {
   );
 
   if (checkReviewHost === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_REVIEW_HOST)); // 3032
+    return res.send(errResponse(baseResponse.USER_IS_NOT_REVIEW_HOST)); // 3032
 
   // Response Error End
 
@@ -311,7 +311,7 @@ export const reportReview = async function (req: any, res: any) {
   );
 
   if (checkReviewHost === 1)
-    return res.send(response(baseResponse.REVIEW_CAN_REPORTED_BY_OTHERS)); // 3033
+    return res.send(errResponse(baseResponse.REVIEW_CAN_REPORTED_BY_OTHERS)); // 3033
 
   const checkAlreadyReport = await reviewProvider.checkAlreadyReport(
     userId,
@@ -319,7 +319,7 @@ export const reportReview = async function (req: any, res: any) {
   );
 
   if (checkAlreadyReport === 1)
-    return res.send(response(baseResponse.USER_ALREADY_REPORT)); // 3034
+    return res.send(errResponse(baseResponse.USER_ALREADY_REPORT)); // 3034
 
   // Response Error End
 
@@ -371,23 +371,23 @@ export const getMyReview = async function (req: any, res: any) {
   const checkOrderExist = await reviewProvider.checkOrderExist(orderId);
 
   if (checkOrderExist === 0)
-    return res.send(response(baseResponse.ORDER_IS_NOT_EXIST)); // 3027
+    return res.send(errResponse(baseResponse.ORDER_IS_NOT_EXIST)); // 3027
 
   const checkOrderDeleted = await reviewProvider.checkOrderDeleted(orderId);
 
   if (checkOrderDeleted === 0)
-    return res.send(response(baseResponse.ORDER_IS_DELETED)); // 3028
+    return res.send(errResponse(baseResponse.ORDER_IS_DELETED)); // 3028
 
   const checkUsersOrder = await reviewProvider.checkUsersOrder(userId, orderId);
 
   if (checkUsersOrder === 0)
-    return res.send(response(baseResponse.ORDER_IS_NOT_USERS)); // 3030
+    return res.send(errResponse(baseResponse.ORDER_IS_NOT_USERS)); // 3030
 
   const checkReviewExistByOrderId =
     await reviewProvider.checkReviewExistByOrderId(orderId);
 
   if (checkReviewExistByOrderId === 0)
-    return res.send(response(baseResponse.REVIEW_IS_NOT_EXIST)); // 3031
+    return res.send(errResponse(baseResponse.REVIEW_IS_NOT_EXIST)); // 3031
 
   // Response Error End
 
@@ -453,7 +453,7 @@ export const modifyReview = async function (req: any, res: any) {
   );
 
   if (checkReviewHost === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_REVIEW_HOST)); // 3032
+    return res.send(errResponse(baseResponse.USER_IS_NOT_REVIEW_HOST)); // 3032
 
   // Response Error End
 

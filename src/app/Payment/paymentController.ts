@@ -1,6 +1,6 @@
 import * as paymentProvider from '../../app/Payment/paymentProvider';
 import * as paymentService from '../../app/Payment/paymentService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 // 계좌/카드/현금 영수증 조회

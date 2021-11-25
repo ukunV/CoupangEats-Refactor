@@ -1,6 +1,6 @@
 import * as adminProvider from '../../app/admin/adminProvider';
 import * as adminService from '../../app/admin/adminService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';

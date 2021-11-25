@@ -1,6 +1,6 @@
 import * as orderProvider from '../../app/Order/orderProvider';
 import * as orderService from '../../app/Order/orderService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 // regular expression

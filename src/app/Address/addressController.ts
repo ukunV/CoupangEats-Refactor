@@ -1,6 +1,6 @@
 import * as addressProvider from '../../app/Address/addressProvider';
 import * as addressService from '../../app/Address/addressService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';

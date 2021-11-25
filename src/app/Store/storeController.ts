@@ -1,6 +1,6 @@
 import * as storeProvider from '../../app/Store/storeProvider';
 import * as storeService from '../../app/Store/storeService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';
 
@@ -68,7 +68,7 @@ export const getNewStore = async function (req: any, res: any) {
   const checkCategoryExist = await storeProvider.checkCategoryExist(categoryId);
 
   if (checkCategoryExist === 0)
-    return res.send(response(baseResponse.CATEGORY_NOT_EXIST)); // 3005
+    return res.send(errResponse(baseResponse.CATEGORY_NOT_EXIST)); // 3005
 
   // Response Error End
   if (userId) {
@@ -117,18 +117,18 @@ export const getStoresByCategoryId = async function (req: any, res: any) {
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
   }
 
-  if (!page) return res.send(response(baseResponse.PAGE_IS_EMPTY)); // 2017
+  if (!page) return res.send(errResponse(baseResponse.PAGE_IS_EMPTY)); // 2017
 
   if (!regPage.test(page))
-    return res.send(response(baseResponse.PAGE_IS_NOT_VALID)); // 2018
+    return res.send(errResponse(baseResponse.PAGE_IS_NOT_VALID)); // 2018
 
-  if (!size) return res.send(response(baseResponse.SIZE_IS_EMPTY)); // 2019
+  if (!size) return res.send(errResponse(baseResponse.SIZE_IS_EMPTY)); // 2019
 
   if (!regSize.test(size))
-    return res.send(response(baseResponse.SIZE_IS_NOT_VALID)); // 2020
+    return res.send(errResponse(baseResponse.SIZE_IS_NOT_VALID)); // 2020
 
   if (coupon !== '0' && coupon !== '1')
-    return res.send(response(baseResponse.COUPON_STATUS_IS_NOT_VALID)); // 2029
+    return res.send(errResponse(baseResponse.COUPON_STATUS_IS_NOT_VALID)); // 2029
 
   // Request Error End
 
@@ -156,7 +156,7 @@ export const getStoresByCategoryId = async function (req: any, res: any) {
   const checkCategoryExist = await storeProvider.checkCategoryExist(categoryId);
 
   if (checkCategoryExist === 0 && categoryId !== '0')
-    return res.send(response(baseResponse.CATEGORY_NOT_EXIST)); // 3005
+    return res.send(errResponse(baseResponse.CATEGORY_NOT_EXIST)); // 3005
 
   // Response Error End
 
@@ -258,7 +258,7 @@ export const getStore = async function (req: any, res: any) {
   const checkStoreExist = await storeProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -287,7 +287,7 @@ export const getStoreDelivery = async function (req: any, res: any) {
   const checkStoreExist = await storeProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -316,7 +316,7 @@ export const getStoreInfo = async function (req: any, res: any) {
   const checkStoreExist = await storeProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -345,7 +345,7 @@ export const getMainMenu = async function (req: any, res: any) {
   const checkMenuExist = await storeProvider.checkMenuExist(menuId);
 
   if (checkMenuExist === 0)
-    return res.send(response(baseResponse.MENU_IS_NOT_EXIST)); // 3011
+    return res.send(errResponse(baseResponse.MENU_IS_NOT_EXIST)); // 3011
 
   // Response Error End
 
@@ -393,12 +393,12 @@ export const createStoreLike = async function (req: any, res: any) {
   const checkStoreExist = await storeProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   const checkStoreLike = await storeProvider.checkStoreLike(userId, storeId);
 
   if (checkStoreLike === 1)
-    return res.send(response(baseResponse.STORE_LIKE_ALREADY_EXIST)); // 3018
+    return res.send(errResponse(baseResponse.STORE_LIKE_ALREADY_EXIST)); // 3018
 
   // Response Error End
 
@@ -444,7 +444,7 @@ export const deleteStoreLike = async function (req: any, res: any) {
     const checkStoreExist = await storeProvider.checkStoreExist(storeIdArr[i]);
 
     if (checkStoreExist === 0)
-      return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+      return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
     const checkStoreLike = await storeProvider.checkStoreLike(
       userId,
@@ -452,7 +452,7 @@ export const deleteStoreLike = async function (req: any, res: any) {
     );
 
     if (checkStoreLike === 0)
-      return res.send(response(baseResponse.STORE_LIKE_NOT_EXIST)); // 3019
+      return res.send(errResponse(baseResponse.STORE_LIKE_NOT_EXIST)); // 3019
   }
 
   // Response Error End

@@ -1,6 +1,6 @@
 import * as couponProvider from '../../app/Coupon/couponProvider';
 import * as couponService from '../../app/Coupon/couponService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 // regular expression
@@ -89,7 +89,7 @@ export const getCartCoupons = async function (req: any, res: any) {
   const checkStoreExist = await couponProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 

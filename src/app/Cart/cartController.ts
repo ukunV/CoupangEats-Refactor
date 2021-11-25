@@ -1,6 +1,6 @@
 import * as cartProvider from '../../app/Cart/cartProvider';
 import * as cartService from '../../app/Cart/cartService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
 
 // regular expression
@@ -38,7 +38,7 @@ export const createCarts = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -53,18 +53,18 @@ export const createCarts = async function (req: any, res: any) {
   const checkStoreExist = await cartProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   const checkMenuExist = await cartProvider.checkMenuExist(menuId);
 
   if (checkMenuExist === 0)
-    return res.send(response(baseResponse.MENU_IS_NOT_EXIST)); // 3011
+    return res.send(errResponse(baseResponse.MENU_IS_NOT_EXIST)); // 3011
 
   for (let i = 0; i < subIdArr.length; i++) {
     const checkMenuExist = await cartProvider.checkMenuExist(subIdArr[i]);
 
     if (checkMenuExist === 0)
-      return res.send(response(baseResponse.SUB_MENU_IS_NOT_EXIST)); // 3020
+      return res.send(errResponse(baseResponse.SUB_MENU_IS_NOT_EXIST)); // 3020
   }
 
   const checkOtherStoreExist = await cartProvider.checkOtherStoreExist(
@@ -73,7 +73,7 @@ export const createCarts = async function (req: any, res: any) {
   );
 
   if (checkOtherStoreExist === 1)
-    return res.send(response(baseResponse.OTHER_STORE_EXIST)); // 3039
+    return res.send(errResponse(baseResponse.OTHER_STORE_EXIST)); // 3039
 
   // Response Error End
 
@@ -116,7 +116,7 @@ export const changeMenuAmount = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -134,7 +134,7 @@ export const changeMenuAmount = async function (req: any, res: any) {
   );
 
   if (checkMenuExistAtCart === 0)
-    return res.send(response(baseResponse.MENU_IS_NOT_EXIST_AT_CART)); // 3040
+    return res.send(errResponse(baseResponse.MENU_IS_NOT_EXIST_AT_CART)); // 3040
 
   // Response Error End
 
@@ -162,7 +162,7 @@ export const cleanUpCart = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -200,7 +200,7 @@ export const getCart = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -249,7 +249,7 @@ export const getCartDeliveryFee = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -264,7 +264,7 @@ export const getCartDeliveryFee = async function (req: any, res: any) {
   const checkStoreExist = await cartProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -303,7 +303,7 @@ export const getCartCoupon = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -318,7 +318,7 @@ export const getCartCoupon = async function (req: any, res: any) {
   const checkStoreExist = await cartProvider.checkStoreExist(storeId);
 
   if (checkStoreExist === 0)
-    return res.send(response(baseResponse.STORE_IS_NOT_EXIST)); // 3008
+    return res.send(errResponse(baseResponse.STORE_IS_NOT_EXIST)); // 3008
 
   // Response Error End
 
@@ -355,7 +355,7 @@ export const changeCoupon = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -373,7 +373,7 @@ export const changeCoupon = async function (req: any, res: any) {
   );
 
   if (checkCouponObtainedExist === 0)
-    return res.send(response(baseResponse.COUPON_NOT_OBTAIN)); // 3041
+    return res.send(errResponse(baseResponse.COUPON_NOT_OBTAIN)); // 3041
 
   // Response Error End
 
@@ -401,7 +401,7 @@ export const getCouponChoice = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -439,7 +439,7 @@ export const deleteCouponChoice = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -482,7 +482,7 @@ export const changePayment = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 
@@ -532,7 +532,7 @@ export const deleteCartMenu = async function (req: any, res: any) {
   const checkUserExist = await cartProvider.checkUserExist(userId);
 
   if (checkUserExist === 0)
-    return res.send(response(baseResponse.USER_IS_NOT_EXIST)); // 3006
+    return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST)); // 3006
 
   const checkUserBlocked = await cartProvider.checkUserBlocked(userId);
 

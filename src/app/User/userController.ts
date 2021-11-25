@@ -1,8 +1,8 @@
 import * as userProvider from '../../app/User/userProvider';
 import * as userService from '../../app/User/userService';
-import * as baseResponse from '../../../config/baseResponseStatus';
+import { baseResponse } from '../../../config/baseResponseStatus';
 import { response, errResponse } from '../../../config/response';
-import { jwtsecret as secret_config } from '../../../config/secret';
+import { jwt_secret as secret_config } from '../../../config/secret';
 import * as jwt from 'jsonwebtoken';
 // import axios from 'axios';
 // import * as passport from 'passport';
@@ -17,7 +17,7 @@ import regexEmail from 'regex-email';
 // });
 
 // salt
-import user_ctrl = require('../../../controllers/user_ctrl');
+import * as user_ctrl from '../../../controllers/user_ctrl';
 
 // 카카오 로그인
 // import { secretKey as kakao_key } from '../../../config/kakao_config';
@@ -60,28 +60,30 @@ export const createUsers = async function (req: any, res: any) {
 
   // Request Error Start
 
-  if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
+  if (!email) return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
 
   if (email.length > 30)
-    return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
+    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
 
   if (!regexEmail.test(email))
-    return res.send(response(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
+    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
 
-  if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
+  if (!password)
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
 
   if (password.length < 8 || password.length > 20)
-    return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
 
-  if (!name) return res.send(response(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
+  if (!name) return res.send(errResponse(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
 
   if (name.length > 10)
-    return res.send(response(baseResponse.SIGNUP_NAME_LENGTH)); // 2007
+    return res.send(errResponse(baseResponse.SIGNUP_NAME_LENGTH)); // 2007
 
-  if (!phoneNum) return res.send(response(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
+  if (!phoneNum)
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
 
   if (!regPhoneNum.test(phoneNum))
-    return res.send(response(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
 
   if (typeof location === 'string')
     return res.send(errResponse(baseResponse.LOCATION_INFO_IS_NOT_VALID)); // 2076
@@ -93,12 +95,12 @@ export const createUsers = async function (req: any, res: any) {
   const checkEmailExist = await userProvider.checkEmailExist(email);
 
   if (checkEmailExist === 1)
-    return res.send(response(baseResponse.SIGNUP_REDUNDANT_EMAIL)); // 3001
+    return res.send(errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL)); // 3001
 
   const checkPhoneNumExist = await userProvider.checkPhoneNumExist(phoneNum);
 
   if (checkPhoneNumExist === 1)
-    return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUM)); // 3002
+    return res.send(errResponse(baseResponse.SIGNUP_REDUNDANT_PHONENUM)); // 3002
 
   // Response Error End
 
@@ -144,18 +146,19 @@ export const userLogIn = async function (req: any, res: any) {
 
   // Request Error Start
 
-  if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
+  if (!email) return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
 
   if (email.length > 30)
-    return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
+    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
 
   if (!regexEmail.test(email))
-    return res.send(response(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
+    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
 
-  if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
+  if (!password)
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
 
   if (password.length < 8 || password.length > 20)
-    return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
 
   // Request Error End
 
@@ -164,7 +167,7 @@ export const userLogIn = async function (req: any, res: any) {
   const checkEmailExist = await userProvider.checkEmailExist(email);
 
   if (checkEmailExist === 0)
-    return res.send(response(baseResponse.SIGNIN_EMAIL_NOT_EXIST)); // 3003
+    return res.send(errResponse(baseResponse.SIGNIN_EMAIL_NOT_EXIST)); // 3003
 
   const checkEmailBlocked = await userProvider.checkEmailBlocked(email);
 
@@ -179,7 +182,7 @@ export const userLogIn = async function (req: any, res: any) {
   const checkPassword = await userProvider.checkPassword(email, password);
 
   if (checkPassword === -1)
-    return res.send(response(baseResponse.SIGNIN_PASSWORD_WRONG)); // 3004
+    return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG)); // 3004
 
   // Response Error End
 
@@ -581,12 +584,13 @@ export const findEmail = async function (req: any, res: any) {
 
   //Request Error Start
 
-  if (!userName) return res.send(response(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
+  if (!userName) return res.send(errResponse(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
 
-  if (!phoneNum) return res.send(response(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
+  if (!phoneNum)
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
 
   if (!regPhoneNum.test(phoneNum))
-    return res.send(response(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
 
   //Request Error End
 
@@ -619,12 +623,13 @@ export const getEmail = async function (req: any, res: any) {
 
   //Request Error Start
 
-  if (!phoneNum) return res.send(response(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
+  if (!phoneNum)
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_EMPTY)); // 2008
 
-  if (!authNum) return res.send(response(baseResponse.AUTH_NUM_IS_EMPTY)); // 2081
+  if (!authNum) return res.send(errResponse(baseResponse.AUTH_NUM_IS_EMPTY)); // 2081
 
   if (!regPhoneNum.test(phoneNum))
-    return res.send(response(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
+    return res.send(errResponse(baseResponse.SIGNUP_PHONENUM_TYPE)); // 2009
 
   //Request Error End
 
@@ -656,14 +661,14 @@ export const findPassword = async function (req: any, res: any) {
 
   //Request Error Start
 
-  if (!userName) return res.send(response(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
+  if (!userName) return res.send(errResponse(baseResponse.SIGNUP_NAME_EMPTY)); // 2006
 
-  if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
+  if (!email) return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
 
-  if (!type) return res.send(response(baseResponse.AUTH_TYPE_IS_EMPTY)); // 2079
+  if (!type) return res.send(errResponse(baseResponse.AUTH_TYPE_IS_EMPTY)); // 2079
 
   if (type != 1 && type != 2)
-    return res.send(response(baseResponse.AUTH_TYPE_IS_NOT_VALID)); // 2080
+    return res.send(errResponse(baseResponse.AUTH_TYPE_IS_NOT_VALID)); // 2080
 
   //Request Error End
 
@@ -702,20 +707,21 @@ export const updatePassword = async function (req: any, res: any) {
 
   //Request Error Start
 
-  if (!authNum) return res.send(response(baseResponse.AUTH_NUM_IS_EMPTY)); // 2081
+  if (!authNum) return res.send(errResponse(baseResponse.AUTH_NUM_IS_EMPTY)); // 2081
 
-  if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
+  if (!password)
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
 
   if (password.length < 8 || password.length > 20)
-    return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
+    return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH)); // 2005
 
   if (!checkPassword)
-    return res.send(response(baseResponse.CHECK_PASSWORD_IS_EMPTY)); // 2082
+    return res.send(errResponse(baseResponse.CHECK_PASSWORD_IS_EMPTY)); // 2082
 
   if (password != checkPassword)
-    return res.send(response(baseResponse.PASSWORD_IS_DIFFERENT)); // 2083
+    return res.send(errResponse(baseResponse.PASSWORD_IS_DIFFERENT)); // 2083
 
-  if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
+  if (!email) return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY)); // 2001
 
   //Request Error End
 
