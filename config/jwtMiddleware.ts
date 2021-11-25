@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken');
-const secret_config = require('./secret');
-const { response } = require('./response');
-const { errResponse } = require('./response');
-const baseResponse = require('./baseResponseStatus');
+import * as jwt from 'jsonwebtoken';
+import { jwt_secret } from './secret';
+import { errResponse } from './response';
+import { baseResponse } from './baseResponseStatus';
+import { NextFunction } from 'express';
 
-export const jwtMiddleware = (req, res, next) => {
+export const jwtMiddleware = (req: any, res: any, next: NextFunction) => {
   // read the token from header or url
   const token = req.headers['x-access-token'] || req.query.token;
   // token does not exist
@@ -14,14 +14,14 @@ export const jwtMiddleware = (req, res, next) => {
 
   // create a promise that decodes the token
   const p = new Promise((resolve, reject) => {
-    jwt.verify(token, secret_config.jwtsecret, (err, verifiedToken) => {
+    jwt.verify(token, jwt_secret.jwtsecret, (err: any, verifiedToken: any) => {
       if (err) reject(err);
       resolve(verifiedToken);
     });
   });
 
   // if it has failed to verify, it will return an error message
-  const onError = error => {
+  const onError = (error: any) => {
     return res.send(errResponse(baseResponse.TOKEN_VERIFICATION_FAILURE));
   };
   // process the promise

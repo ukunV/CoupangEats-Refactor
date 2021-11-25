@@ -4,7 +4,7 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 
 import { userRoute } from '../src/app/User/userRoute';
-import { storeRoute } from '../src/app/Store/storesRoute';
+import { storeRoute } from '../src/app/Store/storeRoute';
 import { addressRoute } from '../src/app/Address/addressRoute';
 import { cartRoute } from '../src/app/Cart/cartRoute';
 import { couponRoute } from '../src/app/Coupon/couponRoute';
@@ -13,7 +13,7 @@ import { paymentRoute } from '../src/app/Payment/paymentRoute';
 import { orderRoute } from '../src/app/Order/orderRoute';
 import { adminRoute } from '../src/app/admin/adminRoute';
 
-module.exports = function () {
+export const exp = () => {
   const app = express();
 
   app.use(compression());

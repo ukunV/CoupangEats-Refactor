@@ -1,9 +1,9 @@
-const { createLogger, format, transports } = require("winston");
-require("winston-daily-rotate-file");
-const fs = require("fs");
+import { createLogger, format, transports } from 'winston';
+import 'winston-daily-rotate-file';
+import * as fs from 'fs';
 
-const env = process.env.NODE_ENV || "development";
-const logDir = "log";
+const env = process.env.NODE_ENV || 'development';
+const logDir = 'log';
 
 // https://lovemewithoutall.github.io/it/winston-example/
 // Create the log directory if it does not exist
@@ -12,36 +12,32 @@ if (!fs.existsSync(logDir)) {
 }
 
 const dailyRotateFileTransport = new transports.DailyRotateFile({
-  level: "debug",
+  level: 'debug',
   filename: `${logDir}/%DATE%-smart-push.log`,
-  datePattern: "YYYY-MM-DD",
+  datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
-  maxSize: "20m",
-  maxFiles: "14d",
+  maxSize: '20m',
+  maxFiles: '14d',
 });
 
-const logger = createLogger({
-  level: env === "development" ? "debug" : "info",
+export const logger = createLogger({
+  level: env === 'development' ? 'debug' : 'info',
   format: format.combine(
     format.timestamp({
-      format: "YYYY-MM-DD HH:mm:ss",
+      format: 'YYYY-MM-DD HH:mm:ss',
     }),
     format.json()
   ),
   transports: [
     new transports.Console({
-      level: "info",
+      level: 'info',
       format: format.combine(
         format.colorize(),
         format.printf(
-          (info) => `${info.timestamp} ${info.level}: ${info.message}`
+          info => `${info.timestamp} ${info.level}: ${info.message}`
         )
       ),
     }),
     dailyRotateFileTransport,
   ],
 });
-
-module.exports = {
-  logger: logger,
-};
