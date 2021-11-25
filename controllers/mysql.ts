@@ -1,7 +1,7 @@
 import { pool } from '../config/database';
 import { logger } from '../config/winston';
 import { errResponse } from '../config/response';
-import * as baseResponse from '../config/baseResponseStatus';
+import { baseResponse } from '../config/baseResponseStatus';
 
 export const connect_provider = async (
   func: any,

@@ -1,7 +1,15 @@
-const nodemailer = require('nodemailer');
-const mailConf = require('../config/mail_config');
+import * as nodemailer from 'nodemailer';
+import { mail_config } from '../config/mail_config';
 
-const sendMail = async mail => {
+interface Mail {
+  from: string;
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}
+
+const sendMail = async (mail: Mail) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -9,8 +17,8 @@ const sendMail = async mail => {
       port: 587,
       secure: false,
       auth: {
-        user: mailConf.user,
-        pass: mailConf.pass,
+        user: mail_config.user,
+        pass: mail_config.pass,
       },
     });
 
@@ -22,7 +30,7 @@ const sendMail = async mail => {
   }
 };
 
-const resetPasswordMail = async (authNum, to) => {
+export const resetPasswordMail = async (authNum: number, to: string) => {
   const mail = {
     from: 'CoupangEats',
     to: to,
@@ -39,5 +47,3 @@ const resetPasswordMail = async (authNum, to) => {
   };
   return await sendMail(mail);
 };
-
-module.exports = { resetPasswordMail };

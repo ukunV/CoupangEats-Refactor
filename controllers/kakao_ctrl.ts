@@ -1,7 +1,7 @@
-const axios = require('axios');
-const sercetKey = require('../config/kakao_config').sercetKey;
+import axios from 'axios';
+import { kakao_config as sercetKey } from '../config/kakao_config';
 
-const getAddressInfo = async address => {
+export const getAddressInfo = async (address: string) => {
   const encodedAddress = encodeURIComponent(address);
 
   const response = await axios({
@@ -22,8 +22,4 @@ const getAddressInfo = async address => {
   };
 
   return result;
-};
-
-module.exports = {
-  getAddressInfo,
 };

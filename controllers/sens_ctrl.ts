@@ -2,8 +2,22 @@ import axios from 'axios';
 import * as crypto from 'crypto';
 import { sensSecret as sensKey } from '../config/sens_config';
 
+interface Option {
+  phoneNumber: string;
+  serviceId: string;
+  secretKey: string;
+  accessKey: string;
+}
+
 export class NCPClient {
-  constructor(options) {
+  private phoneNumber: string;
+  private serviceId: string;
+  private secretKey: string;
+  private accessKey: string;
+  private url: string;
+  private method: string;
+
+  constructor(options: Option) {
     const { phoneNumber, serviceId, secretKey, accessKey } = options;
     this.phoneNumber = phoneNumber;
     this.serviceId = serviceId;
@@ -13,7 +27,7 @@ export class NCPClient {
     this.method = 'POST';
   }
 
-  async sendSMS({ to, content, countryCode = '82' }) {
+  async sendSMS(to: string, content: string, countryCode = '82') {
     try {
       const { timestamp, signature } = this.prepareSignature();
 
@@ -112,10 +126,7 @@ export const messageAuth = async function (
   else
     content = `비밀번호 변경을 위한 인증번호는 [${authNum}]입니다. 신규 비밀번호로 재설정해주세요.`;
 
-  const { success, status, msg } = await ncp.sendSMS({
-    to,
-    content,
-  });
+  const { success, status, msg } = await ncp.sendSMS(to, content);
 
   if (!success) {
     console.log(
