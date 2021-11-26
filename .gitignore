@@ -15,6 +15,7 @@ config/firebase_key.json
 config/kakao_config.ts
 config/mail_config.ts
 config/sens_config.ts
+config/database.ts
 
 # eslint
 .eslintignore
