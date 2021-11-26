@@ -6,76 +6,78 @@
 
 ```
 ├── 📂 config
-│   ├── 📄 baseResponseStatus.js
-│   ├── 📄 database.js
-│   ├── 📄 express.js
-│   ├── 📄 jwtMiddleware.js
-│   ├── 📄 kakao_config.js
-│   ├── 📄 mail_config.js
-│   ├── 📄 response.js
-│   ├── 📄 secret.js
-│   ├── 📄 sens_config.js
-│   └── 📄 winston.js
+│   ├── 📄 baseResponseStatus.ts
+│   ├── 📄 database.ts
+│   ├── 📄 express.ts
+│   ├── 📄 jwtMiddleware.ts
+│   ├── 📄 kakao_config.ts
+│   ├── 📄 mail_config.ts
+│   ├── 📄 response.ts
+│   ├── 📄 secret.ts
+│   ├── 📄 sens_config.ts
+│   └── 📄 winston.ts
 ├── 📂 controllers
-│   ├── 📄 kakao_ctrl.js
-│   ├── 📄 mail_ctrl.js
-│   ├── 📄 sens_ctrl.js
-│   └── 📄 user_ctrl.js
+│   ├── 📄 kakao_ctrl.ts
+│   ├── 📄 mail_ctrl.ts
+│   ├── 📄 sens_ctrl.ts
+│   └── 📄 user_ctrl.ts
 ├── 📂 log
 ├── 📂 node_modules
 ├── 📂 src
 │   └── 📂 app
+│      │
+│      ├── 📄 index.d.ts
+│      │
 │      ├── 📂 Address
-│      │    ├── 📄 addressDao.js
-│      │    ├── 📄 addressController.js
-│      │    ├── 📄 addressProvider.js
-│      │    └── 📄 addressService.js
+│      │    ├── 📄 addressDao.ts
+│      │    ├── 📄 addressController.ts
+│      │    ├── 📄 addressProvider.ts
+│      │    └── 📄 addressService.ts
 │      ├── 📂 admin
-│      │    ├── 📄 adminDao.js
-│      │    ├── 📄 adminController.js
-│      │    ├── 📄 adminProvider.js
-│      │    └── 📄 adminService.js
+│      │    ├── 📄 adminDao.ts
+│      │    ├── 📄 adminController.ts
+│      │    ├── 📄 adminProvider.ts
+│      │    └── 📄 adminService.ts
 │      ├── 📂 Cart
-│      │    ├── 📄 cartDao.js
-│      │    ├── 📄 cartController.js
-│      │    ├── 📄 cartProvider.js
-│      │    └── 📄 cartService.js
+│      │    ├── 📄 cartDao.ts
+│      │    ├── 📄 cartController.ts
+│      │    ├── 📄 cartProvider.ts
+│      │    └── 📄 cartService.ts
 │      ├── 📂 Coupon
-│      │    ├── 📄 couponDao.js
-│      │    ├── 📄 couponController.js
-│      │    ├── 📄 couponProvider.js
-│      │    └── 📄 couponService.js
+│      │    ├── 📄 couponDao.ts
+│      │    ├── 📄 couponController.ts
+│      │    ├── 📄 couponProvider.ts
+│      │    └── 📄 couponService.ts
 │      ├── 📂 Order
-│      │    ├── 📄 orderDao.js
-│      │    ├── 📄 orderController.js
-│      │    ├── 📄 orderProvider.js
-│      │    └── 📄 orderService.js
+│      │    ├── 📄 orderDao.ts
+│      │    ├── 📄 orderController.ts
+│      │    ├── 📄 orderProvider.ts
+│      │    └── 📄 orderService.ts
 │      ├── 📂 Payment
-│      │    ├── 📄 paymentDao.js
-│      │    ├── 📄 paymentController.js
-│      │    ├── 📄 paymentProvider.js
-│      │    └── 📄 paymentService.js
+│      │    ├── 📄 paymentDao.ts
+│      │    ├── 📄 paymentController.ts
+│      │    ├── 📄 paymentProvider.ts
+│      │    └── 📄 paymentService.ts
 │      ├── 📂 Review
-│      │    ├── 📄 reviewDao.js
-│      │    ├── 📄 reviewController.js
-│      │    ├── 📄 reviewProvider.js
-│      │    └── 📄 reviewService.js
+│      │    ├── 📄 reviewDao.ts
+│      │    ├── 📄 reviewController.ts
+│      │    ├── 📄 reviewProvider.ts
+│      │    └── 📄 reviewService.ts
 │      ├── 📂 Store
-│      │    ├── 📄 storeDao.js
-│      │    ├── 📄 storeController.js
-│      │    ├── 📄 storeProvider.js
-│      │    └── 📄 storeService.js
+│      │    ├── 📄 storeDao.ts
+│      │    ├── 📄 storeController.ts
+│      │    ├── 📄 storeProvider.ts
+│      │    └── 📄 storeService.ts
 │      └── 📂 User
-│           ├── 📄 userDao.js
-│           ├── 📄 userController.js
-│           ├── 📄 userProvider.js
-│           └── 📄 userService.js
+│           ├── 📄 userDao.ts
+│           ├── 📄 userController.ts
+│           ├── 📄 userProvider.ts
+│           └── 📄 userService.ts
 │
 ├── 📄 .gitattributes
 ├── 📄 .gitignore
-├── 📄 index.js
-├── 📄 package-lock.json
-├── 📄 package.json
+├── 📄 index.ts
+├── 📄 package.tson
 └── 📄 README.md
 ```
 
