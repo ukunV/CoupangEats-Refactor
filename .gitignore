@@ -1,5 +1,13 @@
+dist
+
 # logs
 log
+
+# node_modules
+node_modules
+
+# package.json
+package-lock.json
 
 # config
 config/secret.js
@@ -12,7 +20,6 @@ config/sens_config.js
 .eslintignore
 .eslintrc.js
 
-dist
+# OS Files
 .DS_Store
-node_modules
-package-lock.json
+
