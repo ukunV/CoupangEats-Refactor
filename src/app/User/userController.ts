@@ -27,15 +27,50 @@ import * as user_ctrl from '../../../controllers/user_ctrl';
 import { getAddressInfo as kakaoMap } from '../../../controllers/kakao_ctrl';
 
 // ncp-sens
-import * as ncpSens from '../../../controllers/sens_ctrl';
+import { sendSMS } from '../../../controllers/sens_ctrl';
 
 // nodemailer
 import { resetPasswordMail as mailer } from '../../../controllers/mail_ctrl';
+import { send } from 'process';
 
 // regex
 // const regexName = /^[가-힣]+$/;
 const regPhoneNum = /^\d{10,11}$/;
 const regDistance = /^[0-9]+(.[0-9]+)?$/;
+
+// 랜덤 인증번호 생성 함수
+export const createAuthNum = () => {
+  const randNum = Math.floor(Math.random() * 900000) + 100000;
+
+  return randNum;
+};
+
+// ncp-sens 문자전송 함수
+export const messageAuth = async function (
+  type: any,
+  phoneNum: any,
+  authNum: any
+) {
+  const to = phoneNum;
+  let content;
+
+  if (type === 1)
+    content = `쿠팡 휴대폰 인증번호 [${authNum}] 위 번호를 인증 창에 입력하세요.`;
+  else
+    content = `비밀번호 변경을 위한 인증번호는 [${authNum}]입니다. 신규 비밀번호로 재설정해주세요.`;
+
+  const { success, msg, status } = await sendSMS(to, content);
+
+  if (!success) {
+    console.log(
+      `(ERROR) node-sens error: ${msg}, Status ${status} Date ${Date.now()}`
+    );
+  } else {
+    console.log(success);
+    console.log(status);
+    console.log(msg);
+  }
+};
 
 /**
  * API No. 0
@@ -601,9 +636,9 @@ export const findEmail = async function (req: any, res: any) {
 
   // Response Error End
 
-  const authNum = ncpSens.createAuthNum();
+  const authNum = createAuthNum();
 
-  ncpSens.messageAuth(1, phoneNum, authNum);
+  messageAuth(1, phoneNum, authNum);
 
   const result = await userService.updateAuthNumByPhoneNum(phoneNum, authNum);
 
@@ -681,12 +716,12 @@ export const findPassword = async function (req: any, res: any) {
 
   // Response Error End
 
-  const authNum = ncpSens.createAuthNum();
+  const authNum = createAuthNum();
 
   if (type === 1) {
     const phoneNum = await userProvider.selectPhoneNum(email);
 
-    ncpSens.messageAuth(2, phoneNum, authNum);
+    messageAuth(2, phoneNum, authNum);
   } else mailer(authNum, email);
 
   const result = await userService.updateAuthNumByEmail(email, authNum);
