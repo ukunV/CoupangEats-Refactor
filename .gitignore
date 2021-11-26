@@ -10,11 +10,11 @@ node_modules
 package-lock.json
 
 # config
-config/secret.js
+config/secret.ts
 config/firebase_key.json
-config/kakao_config.js
-config/mail_config.js
-config/sens_config.js
+config/kakao_config.ts
+config/mail_config.ts
+config/sens_config.ts
 
 # eslint
 .eslintignore
