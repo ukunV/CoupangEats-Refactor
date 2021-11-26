@@ -1,7 +1,7 @@
 import { exp as express } from './config/express';
 import { logger } from './config/winston';
 
-let port;
+let port: number;
 
 if (process.env.NODE_ENV === 'development') {
   port = 3001;

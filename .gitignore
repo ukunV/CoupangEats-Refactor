@@ -1,10 +1,18 @@
-.idea/*
-node_modules
-package-lock.json
+# logs
 log
-.DS_Store
+
+# config
 config/secret.js
 config/firebase_key.json
 config/kakao_config.js
 config/mail_config.js
 config/sens_config.js
+
+# eslint
+.eslintignore
+.eslintrc.js
+
+dist
+.DS_Store
+node_modules
+package-lock.json

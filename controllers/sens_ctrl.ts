@@ -27,11 +27,35 @@ export class NCPClient {
     this.method = 'POST';
   }
 
+  prepareSignature() {
+    const space = ' ';
+    const newLine = '\n';
+    const message = [];
+    const hmac = crypto.createHmac('sha256', this.secretKey);
+    const url2 = `/sms/v2/services/${this.serviceId}/messages`;
+    const timestamp = Date.now().toString();
+
+    message.push(this.method);
+    message.push(space);
+    message.push(url2);
+    message.push(newLine);
+    message.push(timestamp);
+    message.push(newLine);
+    message.push(this.accessKey);
+
+    const signature = hmac.update(message.join('')).digest('base64');
+
+    return {
+      timestamp,
+      signature,
+    };
+  }
+
   async sendSMS(to: string, content: string, countryCode = '82') {
     try {
       const { timestamp, signature } = this.prepareSignature();
 
-      const response = await axios({
+      const response = await axios.post({
         method: this.method,
         url: this.url,
         headers: {
@@ -74,30 +98,6 @@ export class NCPClient {
         status: error.response.status || 500,
       };
     }
-  }
-
-  prepareSignature() {
-    const space = ' ';
-    const newLine = '\n';
-    const message = [];
-    const hmac = crypto.createHmac('sha256', this.secretKey);
-    const url2 = `/sms/v2/services/${this.serviceId}/messages`;
-    const timestamp = Date.now().toString();
-
-    message.push(this.method);
-    message.push(space);
-    message.push(url2);
-    message.push(newLine);
-    message.push(timestamp);
-    message.push(newLine);
-    message.push(this.accessKey);
-
-    const signature = hmac.update(message.join('')).digest('base64');
-
-    return {
-      timestamp,
-      signature,
-    };
   }
 }
 
