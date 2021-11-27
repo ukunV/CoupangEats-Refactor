@@ -1,6 +1,5 @@
 import { connect_provider } from '../../../controllers/mysql';
 import * as userDao from './userDao';
-import * as user_ctrl from '../../../controllers/user_ctrl';
 
 // Provider: Read 비즈니스 로직 처리
 

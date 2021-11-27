@@ -39,20 +39,18 @@ export const createUser = async function (
   lng: string
 ) {
   const query = `
-                insert into User(email, password, name,
-                                phoneNum, userLatitude, userLongtitude)
+                insert into User(email, password, name, phoneNum, userLatitude, userLongtitude)
                 values (?, ?, ?, ?, ?, ?);
                 `;
 
-  const row = await connection.query(
-    query,
+  const row = await connection.query(query, [
     email,
     hashedPassword,
     name,
     phoneNum,
     lat,
-    lng
-  );
+    lng,
+  ]);
 
   return row[0];
 };
@@ -63,14 +61,14 @@ export const selecthashedPassword = async function (
   email: string
 ) {
   const query = `
-                select hashedPassword
+                select password
                 from User
                 where email = ?;
                 `;
 
   const row = await connection.query(query, email);
 
-  return row[0][0]['hashedPassword'];
+  return row[0][0]['password'];
 };
 
 // 유저 존재 여부 확인

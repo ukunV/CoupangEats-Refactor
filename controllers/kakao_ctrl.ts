@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { kakao_config as sercetKey } from '../config/kakao_config';
+import { kakao_config } from '../config/kakao_config';
 
 export const getAddressInfo = async (address: string) => {
   const encodedAddress = encodeURIComponent(address);
@@ -8,11 +8,11 @@ export const getAddressInfo = async (address: string) => {
     method: 'GET',
     url: `https://dapi.kakao.com/v2/local/search/address.json?analyze_type=similar&query=${encodedAddress}`,
     headers: {
-      Authorization: `KakaoAK ${sercetKey}`,
+      Authorization: `KakaoAK ${kakao_config.secretKey}`,
     },
-  });
+  }).catch(err => err.message);
 
-  if (response.data.documents.length === 0) {
+  if (!response || response.data.documents.length === 0) {
     return '위치정보가 잘못되었습니다.';
   }
 

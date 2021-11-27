@@ -33,7 +33,7 @@ import { resetPasswordMail as mailer } from '../../../controllers/mail_ctrl';
 // regex
 const regPhoneNum = /^\d{10,11}$/;
 const regDistance = /^[0-9]+(.[0-9]+)?$/;
-const regEmail = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+// const regEmail = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
 
 // 랜덤 인증번호 생성 함수
 export const createAuthNum = () => {
@@ -97,8 +97,8 @@ export const createUsers = async function (req: any, res: any) {
   if (email.length > 30)
     return res.send(errResponse(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
 
-  if (!regEmail.test(email))
-    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
+  // if (!regEmail.test(email))
+  //   return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
 
   if (!password)
     return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
@@ -180,8 +180,8 @@ export const userLogIn = async function (req: any, res: any) {
   if (email.length > 30)
     return res.send(errResponse(baseResponse.SIGNUP_EMAIL_LENGTH)); // 2002
 
-  if (!regEmail.test(email))
-    return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
+  // if (!regEmail.test(email))
+  //   return res.send(errResponse(baseResponse.SIGNUP_EMAIL_TYPE)); // 2003
 
   if (!password)
     return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2004
@@ -210,8 +210,9 @@ export const userLogIn = async function (req: any, res: any) {
 
   const hashedPassword = await userProvider.selecthashedPassword(email);
 
-  if (!user_ctrl.checkPassword(password, hashedPassword))
-    return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG)); // 3004
+  const check = await user_ctrl.checkPassword(password, hashedPassword);
+
+  if (!check) return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG)); // 3004
 
   // Response Error End
 
